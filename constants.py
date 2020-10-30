@@ -1,0 +1,5 @@
+DRIVER = "{ODBC Driver 17 for SQL Server}"
+SERVER = "192.168.20.233"
+DATABASE_NAME = "SSD_Testing"
+USERNAME = "labuser"
+PASSWORD = "Kioxia123"
