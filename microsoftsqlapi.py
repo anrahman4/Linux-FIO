@@ -22,8 +22,34 @@ class SQLServerAPI:
             ';PWD=' + self.PASSWORD)
         cursor = cnxn.cursor()
 
+    def insert_hammerdb(self, key_dict):
+        cnxn = pyodbc.connect(
+            'DRIVER=' + self.DRIVER +
+            ';SERVER=' + self.SERVER +
+            ';DATABASE=' + self.DATABASE +
+            ';UID=' + self.USERNAME +
+            ';PWD=' + self.PASSWORD)
+        cursor = cnxn.cursor()
+        cursor.execute('''
+                       INSERT INTO SSD_Testing.dbo.hammerdb_tpcc VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
+                       ''',
+                       (key_dict["database"],
+                        key_dict["benchmark"],
+                        key_dict["warehouses"],
+                        key_dict["mysql_test_type"],
+                        key_dict["mysql_test_time"],
+                        key_dict["use_all_ware"],
+                        key_dict["num_virt_usr_run"],
+                        key_dict["delay_time"],
+                        key_dict["repeat_time"],
+                        key_dict["iter"],
+                        key_dict["tpm"],
+                        key_dict["nopm"]))
+        cursor.commit()
+        cnxn.close()
+        return "Insertion of HammerDB Data Successful"
+
     def insert_fio(self, key_dict):
-        #print(key_dict)
         cnxn = pyodbc.connect(
             'DRIVER=' + self.DRIVER +
             ';SERVER=' + self.SERVER +

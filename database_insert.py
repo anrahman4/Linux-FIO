@@ -38,6 +38,8 @@ sql_server = microsoftsqlapi.SQLServerAPI(driver, server, database_name, usernam
 def execute(benchmark, data_folder_name):
     if benchmark == "fio":
         insert_data_fio(data_folder_name)
+    elif benchmark == "hammerdb":
+        insert_data_hammerdb(data_folder_name)
 
 
 def insert_data_fio(data_folder_name):
@@ -84,11 +86,59 @@ def create_fiodict(file):
             fio_dict["iodepth"] = iodepth
             
             for i in range(len(fio_vars)):
-                # TODO: disk_util parameter still has added characters on the end, get rid of it
                 fio_dict[fio_vars[i]] = fio_data[i]
     #for k, v in fio_dict.items():
         #print(k, v)
     return fio_dict
+
+
+def insert_data_hammerdb(data_folder_name):
+    data_folder_path = Path(r"/home/" + username + "/HammerDB-3.3/runs/" + data_folder_name).glob('**/*')
+    data_files = [file for file in data_folder_path if file.is_file()]
+    for file in data_files:
+        hammerdb_dict = create_hammerdbdict(file)
+        if hammerdb_dict:
+            print(sql_server.insert_hammerdb(hammerdb_dict))
+
+
+def create_hammerdbdict(file):
+    hammerdb_dict = {}
+    str_file = str(file)
+    if 'logfile' in str_file:
+        with open(file, 'r') as reader:
+            data = reader.readline().split(";")
+            data2 = reader.readlines()
+            database = data[0]
+            benchmark = data[1]
+            warehouses = int(data[2])
+            mysql_test_type = data[3]
+            mysql_test_time = int(data[4])
+            use_all_ware = data[5]
+            num_virt_usr_run = int(data[6])
+            delay_time = int(data[7])
+            repeat_time = int(data[8])
+            iterations = int(data[9])
+            results = data2[-2]
+            tpm = results.split(" ")[6]
+            nopm = results.split(" ")[10]
+
+            hammerdb_dict["database"] = database
+            hammerdb_dict["benchmark"] = benchmark
+            hammerdb_dict["warehouses"] = warehouses
+            hammerdb_dict["mysql_test_type"] = mysql_test_type
+            hammerdb_dict["mysql_test_time"] = mysql_test_time
+            hammerdb_dict["use_all_ware"] = use_all_ware
+            hammerdb_dict["num_virt_usr_run"] = num_virt_usr_run
+            hammerdb_dict["delay_time"] = delay_time
+            hammerdb_dict["repeat_time"] = repeat_time
+            hammerdb_dict["iter"] = iterations
+            hammerdb_dict["tpm"] = tpm
+            hammerdb_dict["nopm"] = nopm
+
+    #for k, v in hammerdb_dict.items():
+    #    print(k, v)
+
+    return hammerdb_dict
 
 
 if __name__ == '__main__':
