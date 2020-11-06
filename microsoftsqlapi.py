@@ -31,9 +31,16 @@ class SQLServerAPI:
             ';PWD=' + self.PASSWORD)
         cursor = cnxn.cursor()
         cursor.execute('''
-                       INSERT INTO SSD_Testing.dbo.hammerdb_tpcc VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
+                       INSERT INTO SSD_Testing.dbo.hammerdb_tpcc VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
                        ''',
-                       (key_dict["database"],
+                       (key_dict["date"],
+                        key_dict["timestamp"],
+                        key_dict["ram"],
+                        key_dict["model"],
+                        key_dict["serial"],
+                        key_dict["fw_rev"],
+                        key_dict["capacity"],
+                        key_dict["database"],
                         key_dict["benchmark"],
                         key_dict["warehouses"],
                         key_dict["mysql_test_type"],

@@ -108,20 +108,35 @@ def create_hammerdbdict(file):
         with open(file, 'r') as reader:
             data = reader.readline().split(";")
             data2 = reader.readlines()
-            database = data[0]
-            benchmark = data[1]
-            warehouses = int(data[2])
-            mysql_test_type = data[3]
-            mysql_test_time = int(data[4])
-            use_all_ware = data[5]
-            num_virt_usr_run = int(data[6])
-            delay_time = int(data[7])
-            repeat_time = int(data[8])
-            iterations = int(data[9])
+
+            date = data[0]
+            timestamp = data[1]
+            ram = data[2]
+            model = data[3]
+            serial = data[4]
+            fw_rev = data[5]
+            capacity = data[6]
+            database = data[7]
+            benchmark = data[8]
+            warehouses = int(data[9])
+            mysql_test_type = data[10]
+            mysql_test_time = int(data[11])
+            use_all_ware = data[12]
+            num_virt_usr_run = int(data[13])
+            delay_time = int(data[14])
+            repeat_time = int(data[15])
+            iterations = int(data[16])
             results = data2[-2]
             tpm = results.split(" ")[6]
             nopm = results.split(" ")[10]
-
+            
+            hammerdb_dict["date"] = date
+            hammerdb_dict["timestamp"] = timestamp
+            hammerdb_dict["ram"] = ram
+            hammerdb_dict["model"] = model
+            hammerdb_dict["serial"] = serial
+            hammerdb_dict["fw_rev"] = fw_rev
+            hammerdb_dict["capacity"] = capacity
             hammerdb_dict["database"] = database
             hammerdb_dict["benchmark"] = benchmark
             hammerdb_dict["warehouses"] = warehouses
