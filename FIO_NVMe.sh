@@ -10,11 +10,15 @@ echo $testpath
 controller=${testpath::-3}
 echo $controller
 
+server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " -`
+cpu_model=`sudo cat /proc/cpuinfo | grep 'model name' | uniq | cut -d ':' -f 2 | xargs | tr " " -`
 serial_num=`nvme id-ctrl $testpath | awk '$1=="sn" {print $3}'`
 model_num=`nvme id-ctrl $testpath | awk '$1=="mn" {print $3}'`
 fw_rev=`nvme id-ctrl $testpath | awk '$1=="fr" {print $3}'`
 cap_Bytes=`nvme id-ctrl $testpath | awk '$1=="tnvmcap" {print $3}'`
 TB_multiplier=1000000000000
+echo "Server: $server_model"
+echo "CPU: $cpu_model"
 echo "Serial Num: $serial_num"
 echo "Model Num: $model_num"
 echo "FW_REV: $fw_rev"
@@ -29,7 +33,7 @@ iosize=$(($cap_TB * $num_loops * 1000))
 
 date=$(date '+%Y%m%d')
 timestamp=$(date '+%H%M%S')
-result_dir="${model_num}_${serial_num}_${fw_rev}_${date}_${timestamp}"
+result_dir="${model_num}_${serial_num}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}"
 telemetry_dir="Telemetry_Logs"
 run_output_dir="Run_Output"
 

@@ -74,6 +74,8 @@ def create_fiodict(file):
             threads = job_info[2][1:]
             iodepth = job_info[3][2:]
             bs = job_info[4][2:]
+            cpu_model = drive_data[5]
+            server_model = drive_data[6].split("/")[0]
 
             fio_dict["model"] = model
             fio_dict["serial"] = serial
@@ -84,6 +86,8 @@ def create_fiodict(file):
             fio_dict["bs"] = bs
             fio_dict["io_engine"] = ioengine
             fio_dict["iodepth"] = iodepth
+            fio_dict["cpu_model"] = cpu_model
+            fio_dict["server_model"] = server_model
             
             for i in range(len(fio_vars)):
                 fio_dict[fio_vars[i]] = fio_data[i]
