@@ -68,9 +68,11 @@ class SQLServerAPI:
                           INSERT INTO SSD_Testing.dbo.fio VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
                        ''',
-                       (key_dict["model"],
+                       (key_dict["server_model"],
+                        key_dict["cpu_model"],
+                        key_dict["model"],
                         key_dict["serial"],
                         key_dict["fw_rev"],
                         key_dict["timestamp"],
@@ -217,12 +219,10 @@ class SQLServerAPI:
                         key_dict["disk_write_iops"],
                         key_dict["disk_read_merges"],
                         key_dict["disk_write_merges"],
-                        key_dict["disk_read_ticks"],
-                        key_dict["write_ticks"],
-                        key_dict["disk_queue_time"],
-                        key_dict["disk_util"],
-                        key_dict["cpu_model"],
-                        key_dict["server_model"]))
+                        #key_dict["disk_read_ticks"],
+                        #key_dict["write_ticks"],
+                        #key_dict["disk_queue_time"],
+                        key_dict["disk_util"]))
         cursor.commit()
         cnxn.close()
         print("Insertion of FIO Data Successful")

@@ -10,8 +10,8 @@ echo $testpath
 controller=${testpath::-3}
 echo $controller
 
-server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " -`
-cpu_model=`sudo cat /proc/cpuinfo | grep 'model name' | uniq | cut -d ':' -f 2 | xargs | tr " " -`
+server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " - | xargs`
+cpu_model=`sudo cat /proc/cpuinfo | grep 'model name' | uniq | cut -d ':' -f 2 | xargs | tr " " - | tr "@" a | tr "(" - | tr ")" - | xargs`
 serial_num=`nvme id-ctrl $testpath | awk '$1=="sn" {print $3}'`
 model_num=`nvme id-ctrl $testpath | awk '$1=="mn" {print $3}'`
 fw_rev=`nvme id-ctrl $testpath | awk '$1=="fr" {print $3}'`
@@ -33,7 +33,7 @@ iosize=$(($cap_TB * $num_loops * 1000))
 
 date=$(date '+%Y%m%d')
 timestamp=$(date '+%H%M%S')
-result_dir="${model_num}_${serial_num}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}"
+result_dir=`echo "${model_num}_${serial_num}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}" | xargs`
 telemetry_dir="Telemetry_Logs"
 run_output_dir="Run_Output"
 
@@ -84,6 +84,7 @@ date
 block_size=(4k 128k)
 
 #iodepths
+queue_depths=(1 2 4 8 16 32 64 128 256)
 seq_rd_qd=32
 seq_wr_qd=32
 rnd_rd_qd=256
@@ -91,41 +92,45 @@ rnd_wr_qd=256
 mix_rnd_rd_wr_qd=256
 
 #numjobs
-threads=2
+threads=(1 2 4 8 16 32 64 128 256)
 
-#for i in "${block_size[@]}"; do
+for qd in "${queue_depths[@]}"; do
 
-echo "Sequential Read  bs=128k t${threads} qd${seq_rd_qd}"
-date
-echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=read --bs=128k --iodepth=${seq_rd_qd} --ioengine=${ioeng} --numjobs=${threads} --norandommap=1 --randrepeat=0 --group_reporting --name=seqread_${ioeng}_t${threads}_qd${seq_rd_qd}_bs128k  --filename=/dev/$NVMEDRIVE --output=${result_dir}-seqread-bs128k-threads${threads}-depth${seq_rd_qd}"
-fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=read --bs=128k --iodepth=${seq_rd_qd} --ioengine=${ioeng} --numjobs=${threads} --norandommap=1 --randrepeat=0 --group_reporting --name=seqread_${ioeng}_t${threads}_qd${seq_rd_qd}_bs128k --filename=/dev/$NVMEDRIVE --output=${result_dir}-seqread-bs128k-threads${threads}-depth${seq_rd_qd}
-date
+for t in "${threads[@]}"; do
 
-echo "Sequential Write bs=128k t${threads} qd${seq_wr_qd}"
+echo "Sequential Read  bs=128k t${t} qd${qd}"
 date
-echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=write --bs=128k --iodepth=${seq_wr_qd} --ioengine=${ioeng} --numjobs=${threads} --norandommap=1 --randrepeat=0 --group_reporting --name=seqwrite_${ioeng}_t${threads}_qd${seq_wr_qd}_bs128k  --filename=/dev/$NVMEDRIVE --output=${result_dir}-seqwrite-bs128k-threads${threads}-depth${seq_wr_qd}"
-fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=write --bs=128k --iodepth=${seq_wr_qd} --ioengine=${ioeng} --numjobs=${threads} --norandommap=1 --randrepeat=0 --group_reporting --name=seqwrite_${ioeng}_t${threads}_qd${seq_wr_qd}_bs128k --filename=/dev/$NVMEDRIVE --output=${result_dir}-seqwrite-bs128k-threads${threads}-depth${seq_wr_qd}
+echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=read --bs=128k --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=seqread_${ioeng}_t${t}_qd${qd}_bs128k  --filename=/dev/$NVMEDRIVE --output=${result_dir}-seqread-bs128k-threads${t}-depth${qd}"
+fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=read --bs=128k --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=seqread_${ioeng}_t${t}_qd${qd}_bs128k --filename=/dev/$NVMEDRIVE --output=${result_dir}_seqread-bs128k-threads${t}-depth${qd}
 date
 
-echo "Random Read bs=4k t${threads} qd${rnd_rd_qd}"
+echo "Sequential Write bs=128k t${t} qd${qd}"
 date
-echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randread --bs=4k --iodepth=${rnd_rd_qd} --ioengine=${ioeng} --numjobs=${threads} --norandommap=1 --randrepeat=0 --group_reporting --name=randread_${ioeng}_t${threads}_qd${rnd_rd_qd}_bs4k  --filename=/dev/$NVMEDRIVE --output=${result_dir}-randread-bs4k-threads${threads}-depth${rnd_rd_qd}"
-fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randread --bs=4k --iodepth=${rnd_rd_qd} --ioengine=${ioeng} --numjobs=${threads} --norandommap=1 --randrepeat=0 --group_reporting --name=randread_${ioeng}_t${threads}_qd${rnd_rd_qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}-randread-bs4k-threads${threads}-depth${rnd_rd_qd}
-date
-
-echo "Random Write bs=4k t${threads} qd${rnd_wr_qd}"
-date
-echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randwrite --bs=4k --iodepth=${rnd_wr_qd} --ioengine=${ioeng} --numjobs=${threads} --norandommap=1 --randrepeat=0 --group_reporting --name=randwrite_${ioeng}_t${threads}_qd${rnd_wr_qd}_bs4k  --filename=/dev/$NVMEDRIVE --output=${result_dir}-randwrite-bs4k-threads${threads}-depth${rnd_wr_qd}"
-fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randwrite --bs=4k --iodepth=${rnd_wr_qd} --ioengine=${ioeng} --numjobs=${threads} --norandommap=1 --randrepeat=0 --group_reporting --name=randwrite_${ioeng}_t${threads}_qd${rnd_wr_qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}-randwrite-bs4k-threads${threads}-depth${rnd_wr_qd}
+echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=write --bs=128k --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=seqwrite_${ioeng}_t${t}_qd${qd}_bs128k  --filename=/dev/$NVMEDRIVE --output=${result_dir}-seqwrite-bs128k-threads${t}-depth${qd}"
+fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=write --bs=128k --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=seqwrite_${ioeng}_t${t}_qd${qd}_bs128k --filename=/dev/$NVMEDRIVE --output=${result_dir}_seqwrite-bs128k-threads${t}-depth${qd}
 date
 
-echo "Random Mixed 70% Read 30% Write bs=4k t${threads} qd${mix_rnd_rd_wr_qd}"
+echo "Random Read bs=4k t${t} qd${qd}"
 date
-echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randrw --rwmixread=70 --rwmixwrite=30 --bs=4k --iodepth=${mix_rnd_rd_wr_qd} --ioengine=${ioeng} --numjobs=${threads} --norandommap=1 --randrepeat=0 --group_reporting --name=randmixedread70write30_${ioeng}_t${threads}_qd${mix_rnd_rd_wr_qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread70write30_-bs4k-threads${threads}-depth${mix_rnd_rd_wr_qd}"
-fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randrw --rwmixread=70 --rwmixwrite=30 --bs=4k --iodepth=${mix_rnd_rd_wr_qd} --ioengine=${ioeng} --numjobs=${threads} --norandommap=1 --randrepeat=0 --group_reporting --name=randmixedread70write30_${ioeng}_t${threads}_qd${mix_rnd_rd_wr_qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread70write30_-bs4k-threads${threads}-depth${mix_rnd_rd_wr_qd}
+echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randread --bs=4k --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=randread_${ioeng}_t${t}_qd${qd}_bs4k  --filename=/dev/$NVMEDRIVE --output=${result_dir}-randread-bs4k-threads${t}-depth${qd}"
+fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randread --bs=4k --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=randread_${ioeng}_t${t}_qd${qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}_randread-bs4k-threads${t}-depth${qd}
 date
 
-#done
+echo "Random Write bs=4k t${t} qd${qd}"
+date
+echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randwrite --bs=4k --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=randwrite_${ioeng}_t${t}_qd${qd}_bs4k  --filename=/dev/$NVMEDRIVE --output=${result_dir}-randwrite-bs4k-threads${t}-depth${qd}"
+fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randwrite --bs=4k --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=randwrite_${ioeng}_t${t}_qd${qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}_randwrite-bs4k-threads${t}-depth${qd}
+date
+
+echo "Random Mixed 70% Read 30% Write bs=4k t${t} qd${qd}"
+date
+echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randrw --rwmixread=70 --rwmixwrite=30 --bs=4k --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=randmixedread70write30_${ioeng}_t${t}_qd${qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread70write30_-bs4k-threads${t}-depth${qd}"
+fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randrw --rwmixread=70 --rwmixwrite=30 --bs=4k --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=randmixedread70write30_${ioeng}_t${t}_qd${qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread70write30-bs4k-threads${t}-depth${qd}
+date
+
+done
+
+done
 
 cd ..
 

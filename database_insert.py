@@ -50,6 +50,7 @@ def insert_data_fio(data_folder_name):
     for file in data_files:
         fio_dict = create_fiodict(file)
         if fio_dict:
+            print(str(file))
             sql_server.insert_fio(fio_dict)
 
 
