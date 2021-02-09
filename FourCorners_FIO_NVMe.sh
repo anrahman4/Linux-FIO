@@ -56,7 +56,7 @@ nvme telemetry-log /dev/$NVMEDRIVE --output-file=CD6_telemetry_${date}_before_wo
 
 echo "formatting drive started at"
 date
-nvme format /dev/$NVMEDRIVE --ses=1
+nvme format /dev/$NVMEDRIVE --ses=1 --force
 echo "formatting completed at"
 date
 
