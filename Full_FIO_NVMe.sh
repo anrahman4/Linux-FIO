@@ -79,16 +79,16 @@ threads=(1 2 4 8 16 32 64 128 256)
 
 for bs in "${block_size[@]}"; do
 
+echo "Sequential preconditioning for bs=${bs} started at"
+date
+echo "workload:fio --direct=1 --rw=write  --bs=${bs} --iodepth=128 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd128_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
+fio --direct=1 --rw=write  --bs=${bs} --iodepth=128 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd128_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
+echo "Sequential preconditioning done at"
+date
+
 for qd in "${queue_depths[@]}"; do
 
 for t in "${threads[@]}"; do
-
-echo "sequential preconditioning for bs=${bs}, qd={qd}, t={t} started at"
-date
-echo "workload:fio --direct=1 --rw=write  --bs=${bs} --iodepth={qd} --ioengine=${ioeng} --numjobs={t} --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs{bs}_qd{qd}_t{t} --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
-fio --direct=1 --rw=write  --bs=${bs} --iodepth={qd} --ioengine=${ioeng} --numjobs={t} --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs{bs}_qd{qd}_t{t} --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
-echo "sequential preconditioning for bs=${bs}, qd={qd}, t={t} done at"
-date
 
 echo "Sequential Write bs=${bs} t${t} qd${qd}"
 date
@@ -102,12 +102,20 @@ echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered
 fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=read --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=seqread_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_seqread-bs${bs}-threads${t}-depth${qd}
 date
 
-echo "random preconditioning for bs=${bs}, qd={qd}, t={t} started at"
+done
+
+done
+
+echo "Random preconditioning for bs=${bs} started at"
 date
-echo "workload:fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth={qd} --ioengine=${ioeng} --numjobs={t} --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs{bs}_qd{qd}_t{t} --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
-fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth={qd} --ioengine=${ioeng} --numjobs={t} --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs{bs}_qd{qd}_t{t} --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
+echo "workload:fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=128 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs{bs}_qd128_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
+fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=128 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs{bs}_qd128_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
 echo "workload independent preconditioning done at"
 date
+
+for qd in "${queue_depths[@]}"; do
+
+for t in "${threads[@]}"; do
 
 echo "Random Write bs=${bs} t${t} qd${qd}"
 date
