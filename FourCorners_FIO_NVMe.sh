@@ -101,8 +101,8 @@ date
 
 echo "Random preconditioning for bs=4K started at"
 date
-echo "workload:fio --direct=1 --rw=randwrite  --bs=4K --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs4K_qd256 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
-fio --direct=1 --rw=randwrite  --bs=4K --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs4K_qd256 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
+echo "workload:fio --direct=1 --rw=randwrite  --bs=4K --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs4K_qd256_t{t} --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
+fio --direct=1 --rw=randwrite  --bs=4K --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs4K_qd256_t{t} --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
 echo "Random preconditioning done at"
 date
 
