@@ -96,6 +96,14 @@ echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered
 fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=write --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=seqwrite_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_seqwrite-bs${bs}-threads${t}-depth${qd}
 date
 
+done 
+
+done
+
+for qd in "${queue_depths[@]}"; do
+
+for t in "${threads[@]}"; do
+
 echo "Sequential Read  bs=${bs} t${t} qd${qd}"
 date
 echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=read --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=seqread_${ioeng}_t${t}_qd${qd}_bs${bs}  --filename=/dev/$NVMEDRIVE --output=${result_dir}_seqread-bs${bs}-threads${t}-depth${qd}"
@@ -123,11 +131,27 @@ echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered
 fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randwrite --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=randwrite_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randwrite-bs${bs}-threads${t}-depth${qd}
 date
 
+done 
+
+done
+
+for qd in "${queue_depths[@]}"; do
+
+for t in "${threads[@]}"; do
+
 echo "Random Mixed 70% Read 30% Write bs=${bs} t${t} qd${qd}"
 date
 echo "fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randrw --rwmixread=70 --rwmixwrite=30 --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=randmixedread70write30_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread70write30_-bs${bs}-threads${t}-depth${qd}"
 fio --time_based --runtime=300 --output-format=terse --direct=1 --buffered=0 --rw=randrw --rwmixread=70 --rwmixwrite=30 --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --name=randmixedread70write30_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread70write30-bs${bs}-threads${t}-depth${qd}
 date
+
+done
+
+done
+
+for qd in "${queue_depths[@]}"; do
+
+for t in "${threads[@]}"; do
 
 echo "Random Read bs=${bs} t${t} qd${qd}"
 date
