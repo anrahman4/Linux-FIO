@@ -75,6 +75,7 @@ def create_fiodict(file):
             threads = job_info[2][1:]
             iodepth = job_info[3][2:]
             bs = job_info[4][2:]
+            bs = bs.replace("k", "")
             cpu_model = drive_data[5]
             server_model = drive_data[6].split("/")[0]
 
