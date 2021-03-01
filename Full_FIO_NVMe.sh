@@ -72,10 +72,10 @@ cd ${run_output_dir}
 block_size=(512b 1k 2k 4k 8k 16k 32k 64k 128k 256k 512k 1m)
 
 #iodepths
-queue_depths=(1 2 4 8 16 32 64 128 256)
+queue_depths=(1 2 4 8 16 32 64)
 
 #numjobs
-threads=(1 2 4 8 16 32 64 128 256)
+threads=(1 2 4 8 16 32 64)
 
 for bs in "${block_size[@]}"; do
 
