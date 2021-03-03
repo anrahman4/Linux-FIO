@@ -164,3 +164,4 @@ cd ..
 echo "Results are in $result_dir"
 
 sudo python3 database_insert.py fio $result_dir
+sudo python3 excel_creator.py $result_dir
