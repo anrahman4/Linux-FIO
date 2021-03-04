@@ -1,3 +1,4 @@
+from datetime import datetime
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.styles.borders import Border, Side
@@ -24,6 +25,7 @@ fio_vars = "terse_version_3;fio_version;jobname;groupid;error;read_kb;read_bandw
                    ";disk_read_merges;disk_write_merges;disk_read_ticks;write_ticks;disk_queue_time;disk_util".split(
             ";")
 
+# This is used assuming the fio data folder is in the Linux path of /home/<username>/<fio data folder>
 username = "labuser"
 
 
@@ -371,5 +373,7 @@ class ExcelCreator:
 
 if __name__ == "__main__":
     data_folder_name = str(sys.argv[1])
-    excel_name = str(data_folder_name.split("_")[0]) + "_FIO_FourCorners_Data.xlsx"
+    now = datetime.now()
+    now.replace("/", "-")
+    excel_name = str(data_folder_name.split("_")[0]) + "_FIO_FourCorners_Data" + str(now) + ".xlsx"
     ExcelCreator(excel_name, data_folder_name)
