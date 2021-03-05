@@ -373,7 +373,9 @@ class ExcelCreator:
 
 if __name__ == "__main__":
     data_folder_name = str(sys.argv[1])
-    now = datetime.now()
-    now.replace("/", "-")
+    now = str(datetime.now())
+    now = now.replace(":", "-")
+    now = now.replace(".", "_")
+    now = now.replace (" ", "_")
     excel_name = str(data_folder_name.split("_")[0]) + "_FIO_FourCorners_Data_" + str(now) + ".xlsx"
     ExcelCreator(excel_name, data_folder_name)
