@@ -1,8 +1,10 @@
 #!/bin/bash
 #Usage: ./FourCorners_FIO_NVME.sh
 
-read -p "Which drive should benchmark use? Existing data will be lost! [default 'nvme0n1']: " NVMEDRIVE
-NVMEDRIVE=${NVMEDRIVE:-'nvme0n1'}
+#read -p "Which drive should benchmark use? Existing data will be lost! [default 'nvme0n1']: " NVMEDRIVE
+#NVMEDRIVE=${NVMEDRIVE:-'nvme0n1'}
+
+NVMEDRIVE=$1
 echo "Benchmark Drive: $NVMEDRIVE"
 
 testpath=/dev/$NVMEDRIVE
