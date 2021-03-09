@@ -9,8 +9,6 @@ echo "Benchmark Drive: $NVMEDRIVE"
 
 testpath=/dev/$NVMEDRIVE
 echo $testpath
-controller=${testpath::-3}
-echo $controller
 
 server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " - | xargs`
 cpu_model=`sudo cat /proc/cpuinfo | grep 'model name' | uniq | cut -d ':' -f 2 | xargs | tr " " - | tr "@" a | tr "(" - | tr ")" - | xargs`
@@ -53,13 +51,17 @@ cd ${result_dir}
 mkdir ${telemetry_dir}
 cd ${telemetry_dir}
 
-echo "Getting telemetry log prior to running workload"
+echo "Getting telemetry log prior to running workload started at"
+date
 nvme telemetry-log /dev/$NVMEDRIVE --output-file=CD6_telemetry_${date}_before_workload
 
-echo "formatting drive started at"
+echo "Getting telemetry log prior to running workload completed at"
+date
+
+echo "Formatting drive started at"
 date
 nvme format /dev/$NVMEDRIVE --ses=1 --force
-echo "formatting completed at"
+echo "Formatting completed at"
 date
 
 #ioengine
@@ -180,8 +182,12 @@ mv output.csv ${run_output_dir}/output.csv
 
 cd ${telemetry_dir}
 
-echo "Getting telemetry log after running workload"
+echo "Getting telemetry log after running workload started at"
+date
 nvme telemetry-log /dev/$NVMEDRIVE --output-file=CD6_telemetry_${date}_after_workload
+
+echo "Getting telemetry log after running workload completed at"
+date
 
 cd ..
 cd ..
@@ -189,3 +195,5 @@ cd ..
 echo "Results are in $result_dir"
 
 sudo python3 database_insert.py fio $result_dir
+
+exit
