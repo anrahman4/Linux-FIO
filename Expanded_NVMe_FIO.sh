@@ -121,7 +121,7 @@ rd_wr_perc=(0 30 50 70 100)
 
 
 # SEQUENTIAL BS WORKLOAD ONLY
-for bs in "${seq_block_size}"; do
+for bs in "${seq_block_size[@]}"; do
 
 echo "Sequential preconditioning for bs=${bs} started at"
 date
