@@ -15,7 +15,7 @@ cpu_model=`sudo cat /proc/cpuinfo | grep 'model name' | uniq | cut -d ':' -f 2 |
 #vendor=`smartctl -i /dev/$SASDRIVE | awk '$1=="Vendor:" {print $2}'`
 product=`smartctl -i /dev/$SASDRIVE | awk '$1=="Product:" {print $2}'`
 product=`echo ${product/\//-}`
-serial=`smartctl -i /dev/$SASDRIVE | awk '$1=="Serial number:" {print $2}'`
+serial=`sudo smartctl -i /dev/$SASDRIVE | awk '$1=="Serial" {print $3}'`
 fw_rev=`smartctl -i /dev/$SASDRIVE | awk '$1=="Revision:" {print $2}'`
 
 echo "Server: $server_model"
