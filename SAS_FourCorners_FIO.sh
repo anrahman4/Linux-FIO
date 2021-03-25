@@ -12,7 +12,7 @@ echo $testpath
 
 server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " - | xargs`
 cpu_model=`sudo cat /proc/cpuinfo | grep 'model name' | uniq | cut -d ':' -f 2 | xargs | tr " " - | tr "@" a | tr "(" - | tr ")" - | xargs`
-#vendor=`smartctl -i /dev/$SASDRIVE | awk '$1=="Vendor:" {print $2}'`
+vendor=`smartctl -i /dev/$SASDRIVE | awk '$1=="Vendor:" {print $2}'`
 product=`smartctl -i /dev/$SASDRIVE | awk '$1=="Product:" {print $2}'`
 product=`echo ${product/\//-}`
 serial=`sudo smartctl -i /dev/$SASDRIVE | awk '$1=="Serial" {print $3}'`
@@ -20,9 +20,9 @@ fw_rev=`smartctl -i /dev/$SASDRIVE | awk '$1=="Revision:" {print $2}'`
 
 echo "Server: $server_model"
 echo "CPU: $cpu_model"
+echo "Vendor: $vendor"
 echo "Product: $product"
 echo "Serial: $serial"
-#echo "Vendor: $vendor"
 echo "FW_REV: $fw_rev"
 
 date=$(date '+%Y%m%d')
