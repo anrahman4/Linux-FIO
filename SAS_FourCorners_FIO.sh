@@ -12,20 +12,22 @@ echo $testpath
 
 server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " - | xargs`
 cpu_model=`sudo cat /proc/cpuinfo | grep 'model name' | uniq | cut -d ':' -f 2 | xargs | tr " " - | tr "@" a | tr "(" - | tr ")" - | xargs`
-vendor=`smartctl -i /dev/$SASDRIVE | awk '$1=="Vendor:" {print $2}'`
+#vendor=`smartctl -i /dev/$SASDRIVE | awk '$1=="Vendor:" {print $2}'`
 product=`smartctl -i /dev/$SASDRIVE | awk '$1=="Product:" {print $2}'`
 product=`echo ${product/\//-}`
+serial=`smartctl -i /dev/$SASDRIVE | awk '$1=="Serial number:" {print $2}'`
 fw_rev=`smartctl -i /dev/$SASDRIVE | awk '$1=="Revision:" {print $2}'`
 
 echo "Server: $server_model"
 echo "CPU: $cpu_model"
 echo "Product: $product"
-echo "Vendor: $vendor"
+echo "Serial: $serial"
+#echo "Vendor: $vendor"
 echo "FW_REV: $fw_rev"
 
 date=$(date '+%Y%m%d')
 timestamp=$(date '+%H%M%S')
-result_dir=`echo "${vendor}_${product}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}" | xargs`
+result_dir=`echo "${product}_${serial}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}" | xargs`
 run_output_dir="Run_Output"
 
 if [ -d ${result_dir} ]
