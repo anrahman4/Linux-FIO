@@ -95,8 +95,8 @@ rd_wr_perc=(0 30 50 70 100)
 
 #echo "Random preconditioning for bs=${bs} started at"
 #date
-#echo "workload:fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs{bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
-#fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs{bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
+#echo "workload:fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
+#fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
 #echo "workload independent preconditioning done at"
 #date
 
@@ -109,8 +109,8 @@ rd_wr_perc=(0 30 50 70 100)
 
 #echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${t}"
 #date
-#echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite={wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}"
-#fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite={wr_perc} --bs={bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}
+#echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}"
+#fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}
 #date
 
 #done 
@@ -123,12 +123,12 @@ rd_wr_perc=(0 30 50 70 100)
 # SEQUENTIAL BS WORKLOAD ONLY
 for bs in "${seq_block_size}"; do
 
-echo "Sequential preconditioning for bs=${bs} started at"
-date
-echo "workload:fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs{bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
-fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs{bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
-echo "workload independent preconditioning done at"
-date
+#echo "Sequential preconditioning for bs=${bs} started at"
+#date
+#echo "workload:fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
+#fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
+#echo "workload independent preconditioning done at"
+#date
 
 for perc in "${rd_wr_perc[@]}"; do 
 
@@ -139,8 +139,8 @@ for t in "${seq_threads[@]}"; do
 
 echo "Sequential Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${t}"
 date
-echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite={wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-seqmixedread${rd_perc}write${wr_perc}_-bs${bs}-threads${t}-depth${t}"
-fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite={wr_perc} --bs={bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_seqmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}
+echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-seqmixedread${rd_perc}write${wr_perc}_-bs${bs}-threads${t}-depth${t}"
+fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_seqmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}
 date
 
 done
