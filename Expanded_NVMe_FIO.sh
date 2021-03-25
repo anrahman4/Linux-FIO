@@ -1,5 +1,5 @@
 #!/bin/bash
-#Usage: ./Full_FIO_NVME.sh
+#Usage: ./Expanded_NVMe_FIO.sh
 
 #read -p "Which drive should benchmark use? Existing data will be lost! [default 'nvme0n1']: " NVMEDRIVE
 #NVMEDRIVE=${NVMEDRIVE:-'nvme10n1'}
@@ -13,7 +13,7 @@ echo $testpath
 server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " - | xargs`
 cpu_model=`sudo cat /proc/cpuinfo | grep 'model name' | uniq | cut -d ':' -f 2 | xargs | tr " " - | tr "@" a | tr "(" - | tr ")" - | xargs`
 serial_num=`nvme id-ctrl $testpath | awk '$1=="sn" {print $3}'`
-model_num=`nvme id-ctrl $testpath | awk '$1=="mn" {print $3}'`
+model_num=`nvme id-ctrl $testpath | awk '$1=="mn" {print $3, $4, $5, $6, $7}' | xargs | tr " " - | xargs`
 fw_rev=`nvme id-ctrl $testpath | awk '$1=="fr" {print $3}'`
 cap_Bytes=`nvme id-ctrl $testpath | awk '$1=="tnvmcap" {print $3}'`
 TB_multiplier=1000000000000
