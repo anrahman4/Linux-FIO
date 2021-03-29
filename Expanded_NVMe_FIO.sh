@@ -91,33 +91,33 @@ rd_wr_perc=(0 30 50 70 100)
 
 
 # RANDOM BS WORKLOAD ONLY
-#for bs in "${rnd_block_size[@]}"; do
+for bs in "${rnd_block_size[@]}"; do
 
-#echo "Random preconditioning for bs=${bs} started at"
-#date
-#echo "workload:fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
-#fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
-#echo "workload independent preconditioning done at"
-#date
+echo "Random preconditioning for bs=${bs} started at"
+date
+echo "workload:fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
+fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
+echo "workload independent preconditioning done at"
+date
 
-#for perc in "${rd_wr_perc[@]}"; do 
+for perc in "${rd_wr_perc[@]}"; do 
 
-#rd_perc=${perc}
-#wr_perc="$((100-${rd_perc}))"
+rd_perc=${perc}
+wr_perc="$((100-${rd_perc}))"
 
-#for t in "${rnd_threads[@]}"; do
+for t in "${rnd_threads[@]}"; do
 
-#echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${t}"
-#date
-#echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}"
-#fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}
-#date
+echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${t}"
+date
+echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}"
+fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}
+date
 
-#done 
+done 
 
-#done
+done
 
-#done
+done
 
 
 # SEQUENTIAL BS WORKLOAD ONLY
