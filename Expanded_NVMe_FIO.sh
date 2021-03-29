@@ -10,6 +10,7 @@ echo "Benchmark Drive: $NVMEDRIVE"
 testpath=/dev/$NVMEDRIVE
 echo $testpath
 
+drive_name=`sudo nvme id-ctrl $testpath | awk '$1=="subnqn" {print $3}' | cut -d ':' -f 3 | xargs`
 server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " - | xargs`
 cpu_model=`sudo cat /proc/cpuinfo | grep 'model name' | uniq | cut -d ':' -f 2 | xargs | tr " " - | tr "@" a | tr "(" - | tr ")" - | xargs`
 serial_num=`nvme id-ctrl $testpath | awk '$1=="sn" {print $3}'`
@@ -17,6 +18,7 @@ model_num=`nvme id-ctrl $testpath | awk '$1=="mn" {print $3, $4, $5, $6, $7}' | 
 fw_rev=`nvme id-ctrl $testpath | awk '$1=="fr" {print $3}'`
 cap_Bytes=`nvme id-ctrl $testpath | awk '$1=="tnvmcap" {print $3}'`
 TB_multiplier=1000000000000
+echo "Drive Name: $drive_name"
 echo "Server: $server_model"
 echo "CPU: $cpu_model"
 echo "Serial Num: $serial_num"
@@ -33,7 +35,7 @@ iosize=$(($cap_TB * $num_loops * 1000))
 
 date=$(date '+%Y%m%d')
 timestamp=$(date '+%H%M%S')
-result_dir=`echo "${model_num}_${serial_num}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}" | xargs`
+result_dir=`echo "${drive_name}_${model_num}_${serial_num}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}" | xargs`
 telemetry_dir="Telemetry_Logs"
 run_output_dir="Run_Output"
 
