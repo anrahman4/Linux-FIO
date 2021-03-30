@@ -54,8 +54,8 @@ rnd_block_size=(4k 8k 16k 32k 64k 128k 512k 1024k)
 seq_block_size=(128k 512k 1024k)
 
 #numjobs
-rnd_threads=(1 8 16 32 64 128 256)
-seq_threads=(1)
+rnd_qd=(1 8 16 32 64 128 256)
+seq_qd=(1)
 
 #percentile_list
 perc_list="99:99.9:99.99:99.999:99.9999:100"
@@ -79,13 +79,21 @@ for perc in "${rd_wr_perc[@]}"; do
 rd_perc=${perc}
 wr_perc="$((100-${rd_perc}))"
 
-for t in "${rnd_threads[@]}"; do
+for qd in "${rnd_qd[@]}"; do
 
-echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${t}"
-date
-echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$SASDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}"
-fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$SASDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}
-date
+if [ ${qd} -eq 1 ]
+then
+    echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t1 qd${qd}"
+    date
+    echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$SASDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}"
+    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$SASDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}
+    date
+else
+    echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t8 qd${qd}"
+    date
+    echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=8 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t8_qd${qd}_bs${bs} --filename=/dev/$SASDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads8-depth${qd}"
+    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=8 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t8_qd${qd}_bs${bs} --filename=/dev/$SASDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads8-depth${qd}
+    date
 
 done 
 
@@ -109,12 +117,12 @@ for perc in "${rd_wr_perc[@]}"; do
 rd_perc=${perc}
 wr_perc="$((100-${rd_perc}))"
 
-for t in "${seq_threads[@]}"; do
+for qd in "${seq_qd[@]}"; do
 
-echo "Sequential Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${t}"
+echo "Sequential Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t1 qd${qd}"
 date
-echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$SASDRIVE --output=${result_dir}-seqmixedread${rd_perc}write${wr_perc}_-bs${bs}-threads${t}-depth${t}"
-fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${t} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${t}_bs${bs} --filename=/dev/$SASDRIVE --output=${result_dir}_seqmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${t}
+echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$SASDRIVE --output=${result_dir}-seqmixedread${rd_perc}write${wr_perc}_-bs${bs}-threads1-depth${qd}"
+fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$SASDRIVE --output=${result_dir}_seqmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}
 date
 
 done
