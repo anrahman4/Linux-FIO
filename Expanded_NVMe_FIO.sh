@@ -38,6 +38,8 @@ timestamp=$(date '+%H%M%S')
 result_dir=`echo "${drive_name}_${model_num}_${serial_num}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}" | xargs`
 telemetry_dir="Telemetry_Logs"
 run_output_dir="Run_Output"
+rand_output_dir="Random"
+seq_output_dir="Sequential"
 
 
 if [ -d ${result_dir} ]
@@ -71,6 +73,9 @@ cd ..
 mkdir ${run_output_dir}
 cd ${run_output_dir}
 
+mkdir ${rand_output_dir}
+mkdir ${seq_output_dir}
+
 #ioengine
 ioeng="libaio"
 
@@ -91,9 +96,13 @@ perc_list="99:99.9:99.99:99.999:99.9999:100"
 #read write percentages
 rd_wr_perc=(0 30 50 70 100)
 
+cd ${rand_output_dir}
 
 # RANDOM BS WORKLOAD ONLY
 for bs in "${rnd_block_size[@]}"; do
+
+mkdir ${bs}
+cd ${bs}
 
 echo "Random preconditioning for bs=${bs} started at"
 date
@@ -128,11 +137,19 @@ done
 
 done
 
+cd ..
+
 done
 
+cd ..
+
+cd ${seq_output_dir}
 
 # SEQUENTIAL BS WORKLOAD ONLY
 for bs in "${seq_block_size[@]}"; do
+
+mkdir ${bs}
+cd ${bs}
 
 echo "Sequential preconditioning for bs=${bs} started at"
 date
@@ -158,10 +175,9 @@ done
 
 done
 
+cd ..
+
 done
-
-
-
 
 cd ..
 
