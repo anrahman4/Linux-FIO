@@ -76,10 +76,17 @@ for bs in "${rnd_block_size[@]}"; do
 mkdir ${bs}
 cd ${bs}
 
+echo "Sequential preconditioning for bs=${bs} started at"
+date
+echo "workload:fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=0 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$SASDRIVE  --output-format=terse --loops=3"
+fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=0 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$SASDRIVE  --output-format=terse --loops=3
+echo "workload independent preconditioning done at"
+date
+
 echo "Random preconditioning for bs=${bs} started at"
 date
-echo "workload:fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$SASDRIVE  --output-format=terse --loops=3"
-fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$SASDRIVE  --output-format=terse --loops=3
+echo "workload:fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=0 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$SASDRIVE  --output-format=terse --loops=3"
+fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=0 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$SASDRIVE  --output-format=terse --loops=3
 echo "workload independent preconditioning done at"
 date
 
@@ -126,8 +133,8 @@ cd ${bs}
 
 echo "Sequential preconditioning for bs=${bs} started at"
 date
-echo "workload:fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$SASDRIVE  --output-format=terse --loops=3"
-fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$SASDRIVE  --output-format=terse --loops=3
+echo "workload:fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=0 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$SASDRIVE  --output-format=terse --loops=3"
+fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=0 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/$SASDRIVE  --output-format=terse --loops=3
 echo "workload independent preconditioning done at"
 date
 
@@ -152,11 +159,11 @@ cd ..
 
 done
 
-#for file in ${run_output_dir}/*
-#do
-#  cat "$file" >> output.csv
-#done 
-#mv output.csv ${run_output_dir}/output.csv
+for file in ${run_output_dir}/*
+do
+  cat "$file" >> output.csv
+done 
+mv output.csv ${run_output_dir}/output.csv
 
 
 cd ..
