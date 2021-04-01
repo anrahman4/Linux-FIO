@@ -188,11 +188,11 @@ done
 
 cd ..
 
-#for file in ${run_output_dir}/*
-#do
-#  cat "$file" >> output.csv
-#done 
-#mv output.csv ${run_output_dir}/output.csv
+for file in ${run_output_dir}/*
+do
+  cat "$file" >> output.csv
+done 
+mv output.csv ${run_output_dir}/output.csv
 
 cd ${telemetry_dir}
 
