@@ -31,6 +31,7 @@ result_dir=`echo "${vendor}_${product}_${serial}_${fw_rev}_${date}_${timestamp}_
 run_output_dir="Run_Output"
 rand_output_dir="Random"
 seq_output_dir="Sequential"
+outputcsv_dir="output_csv"
 
 if [ -d ${result_dir} ]
 then
@@ -44,6 +45,8 @@ cd ${result_dir}
 
 mkdir ${run_output_dir}
 cd ${run_output_dir}
+
+mkdir ${outputcsv_dir}
 
 mkdir ${rand_output_dir}
 mkdir ${seq_output_dir}
@@ -119,7 +122,15 @@ done
 
 cd ..
 
+for file in ${bs}/*
+do
+  cat "$file" >> ${bs}_output.csv
+done 
+mv ${bs}_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
+
 done
+
+
 
 cd .. 
 
@@ -157,13 +168,13 @@ done
 
 cd ..
 
-done
-
-for file in ${run_output_dir}/*
+for file in ${bs}/*
 do
-  cat "$file" >> output.csv
+  cat "$file" >> ${bs}_output.csv
 done 
-mv output.csv ${run_output_dir}/output.csv
+mv ${bs}_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
+
+done
 
 
 cd ..
