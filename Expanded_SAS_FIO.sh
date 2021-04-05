@@ -25,8 +25,8 @@ echo "Product: $product"
 echo "Serial: $serial"
 echo "FW_REV: $fw_rev"
 
-date=$(date '+%Y%m%d')
-timestamp=$(date '+%H%M%S')
+date=$(date '+%m-%d-%Y')
+timestamp=$(date +'%T')
 result_dir=`echo "${vendor}_${product}_${serial}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}" | xargs`
 run_output_dir="Run_Output"
 rand_output_dir="Random"
