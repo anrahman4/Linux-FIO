@@ -33,8 +33,8 @@ cap_TB=$((cap_TB+1))
 num_loops=2
 iosize=$(($cap_TB * $num_loops * 1000))
 
-date=$(date '+%Y%m%d')
-timestamp=$(date '+%H%M%S')
+date=$(date '+%m-%d-%Y')
+timestamp=$(date +'%T')
 result_dir=`echo "${drive_name}_${model_num}_${serial_num}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}" | xargs`
 telemetry_dir="Telemetry_Logs"
 run_output_dir="Run_Output"
