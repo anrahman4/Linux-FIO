@@ -40,6 +40,7 @@ telemetry_dir="Telemetry_Logs"
 run_output_dir="Run_Output"
 rand_output_dir="Random"
 seq_output_dir="Sequential"
+outputcsv_dir="output_csv"
 
 
 if [ -d ${result_dir} ]
@@ -72,6 +73,8 @@ cd ..
 
 mkdir ${run_output_dir}
 cd ${run_output_dir}
+
+mkdir ${outputcsv_dir}
 
 mkdir ${rand_output_dir}
 mkdir ${seq_output_dir}
@@ -146,7 +149,15 @@ done
 
 cd ..
 
+for file in ${bs}/*
+do
+  cat "$file" >> ${bs}_output.csv
+done 
+mv ${bs}_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
+
 done
+
+
 
 cd ..
 
@@ -184,15 +195,16 @@ done
 
 cd ..
 
+for file in ${bs}/*
+do
+  cat "$file" >> ${bs}_output.csv
+done 
+mv ${bs}_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
 done
 
 cd ..
 
-for file in ${run_output_dir}/*
-do
-  cat "$file" >> output.csv
-done 
-mv output.csv ${run_output_dir}/output.csv
+cd ..
 
 cd ${telemetry_dir}
 
@@ -203,7 +215,6 @@ nvme telemetry-log /dev/$NVMEDRIVE --output-file=${model_num}_telemetry_${date}_
 echo "Getting telemetry log after running workload completed at"
 date
 
-cd ..
 cd ..
 
 echo "Results are in $result_dir"
