@@ -155,6 +155,8 @@ do
 done 
 mv ${bs}_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
 
+sudo python3 database_insert.py fio ${bs}
+
 done
 
 
@@ -200,6 +202,9 @@ do
   cat "$file" >> ${bs}_output.csv
 done 
 mv ${bs}_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
+
+sudo python3 database_insert.py fio ${bs}
+
 done
 
 cd ..
@@ -218,7 +223,5 @@ date
 cd ..
 
 echo "Results are in $result_dir"
-
-#sudo python3 database_insert.py fio $result_dir
 
 exit
