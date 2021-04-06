@@ -138,7 +138,7 @@ def create_fiodict(file):
                     percentile_data = fio_data[j].split("=")
                     percentile = percentile_data[0]
                     percentile_val = percentile_data[1]
-                    fio_dict[fio_vars[i]] = percentile
+                    fio_dict[fio_vars[i]] = percentile[:-1]
                     fio_dict[fio_vars[i+1]] = percentile_val
                     i += 2
                 else:
