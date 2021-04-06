@@ -14,16 +14,52 @@ password = constants.PASSWORD
 # Used for keys in fio_dict
 fio_vars = "terse_version_3;fio_version;jobname;groupid;error;read_kb;read_bandwidth;read_iops;read_runtime_ms" \
            ";read_slat_min;read_slat_max;read_slat_mean;read_slat_dev;read_clat_min;read_clat_max;read_clat_mean" \
-           ";read_clat_dev;read_clat_pct01;read_clat_pct02;read_clat_pct03;read_clat_pct04;read_clat_pct05" \
-           ";read_clat_pct06;read_clat_pct07;read_clat_pct08;read_clat_pct09;read_clat_pct10;read_clat_pct11" \
-           ";read_clat_pct12;read_clat_pct13;read_clat_pct14;read_clat_pct15;read_clat_pct16;read_clat_pct17" \
-           ";read_clat_pct18;read_clat_pct19;read_clat_pct20;read_tlat_min;read_lat_max;read_lat_mean;read_lat_dev" \
+           ";read_clat_dev;" \
+           "read_clat_pct01;read_clat_pct01_val;" \
+           "read_clat_pct02;read_clat_pct02_val;" \
+           "read_clat_pct03;read_clat_pct03_val;" \
+           "read_clat_pct04;read_clat_pct04_val;" \
+           "read_clat_pct05;read_clat_pct05_val;" \
+           "read_clat_pct06;read_clat_pct06_val;" \
+           "read_clat_pct07;read_clat_pct07_val;" \
+           "read_clat_pct08;read_clat_pct08_val;" \
+           "read_clat_pct09;read_clat_pct09_val;" \
+           "read_clat_pct10;read_clat_pct10_val;" \
+           "read_clat_pct11;read_clat_pct11_val;" \
+           "read_clat_pct12;read_clat_pct12_val;" \
+           "read_clat_pct13;read_clat_pct13_val;" \
+           "read_clat_pct14;read_clat_pct14_val;" \
+           "read_clat_pct15;read_clat_pct15_val;" \
+           "read_clat_pct16;read_clat_pct16_val;" \
+           "read_clat_pct17;read_clat_pct17_val;" \
+           "read_clat_pct18;read_clat_pct18_val;" \
+           "read_clat_pct19;read_clat_pct19_val;" \
+           "read_clat_pct20;read_clat_pct20_val;" \
+           "read_tlat_min;read_lat_max;read_lat_mean;read_lat_dev" \
            ";read_bw_min;read_bw_max;read_bw_agg_pct;read_bw_mean;read_bw_dev;write_kb;write_bandwidth;write_iops" \
            ";write_runtime_ms;write_slat_min;write_slat_max;write_slat_mean;write_slat_dev;write_clat_min" \
-           ";write_clat_max;write_clat_mean;write_clat_dev;write_clat_pct01;write_clat_pct02;write_clat_pct03" \
-           ";write_clat_pct04;write_clat_pct05;write_clat_pct06;write_clat_pct07;write_clat_pct08;write_clat_pct09" \
-           ";write_clat_pct10;write_clat_pct11;write_clat_pct12;write_clat_pct13;write_clat_pct14;write_clat_pct15" \
-           ";write_clat_pct16;write_clat_pct17;write_clat_pct18;write_clat_pct19;write_clat_pct20;write_tlat_min" \
+           ";write_clat_max;write_clat_mean;write_clat_dev;" \
+           "write_clat_pct01;write_clat_pct01_val;" \
+           "write_clat_pct02;write_clat_pct02_val;" \
+           "write_clat_pct03;write_clat_pct03_val;" \
+           "write_clat_pct04;write_clat_pct04_val;" \
+           "write_clat_pct05;write_clat_pct05_val;" \
+           "write_clat_pct06;write_clat_pct06_val;" \
+           "write_clat_pct07;write_clat_pct07_val;" \
+           "write_clat_pct08;write_clat_pct08_val;" \
+           "write_clat_pct09;write_clat_pct09_val;" \
+           "write_clat_pct10;write_clat_pct10_val;" \
+           "write_clat_pct11;write_clat_pct11_val;" \
+           "write_clat_pct12;write_clat_pct12_val;" \
+           "write_clat_pct13;write_clat_pct13_val;" \
+           "write_clat_pct14;write_clat_pct14_val;" \
+           "write_clat_pct15;write_clat_pct15_val;" \
+           "write_clat_pct16;write_clat_pct16_val;" \
+           "write_clat_pct17;write_clat_pct17_val;" \
+           "write_clat_pct18;write_clat_pct18_val;" \
+           "write_clat_pct19;write_clat_pct19_val;" \
+           "write_clat_pct20;write_clat_pct20_val;" \
+           "write_tlat_min" \
            ";write_lat_max;write_lat_mean;write_lat_dev;write_bw_min;write_bw_max;write_bw_agg_pct;write_bw_mean" \
            ";write_bw_dev;cpu_user;cpu_sys;cpu_csw;cpu_mjf;cpu_minf;iodepth_1;iodepth_2;iodepth_4;iodepth_8" \
            ";iodepth_16;iodepth_32;iodepth_64;lat_2us;lat_4us;lat_10us;lat_20us;lat_50us;lat_100us;lat_250us" \
@@ -63,10 +99,14 @@ def create_fiodict(file):
     if "bs" in str_file:
         with open(file, 'r') as reader:
             drive_data = str_file.split("_")
-            model = drive_data[0].split("/")[-1]
-            serial = drive_data[1]
-            fw_rev = drive_data[2]
-            timestamp = (drive_data[3] + " " + drive_data[4]).split("/")[0]
+            friendly_name = drive_data[0].split("/")[-1]
+            model = drive_data[1]
+            serial = drive_data[2]
+            fw_rev = drive_data[3]
+            timestamp = (drive_data[4] + " " + drive_data[5]).split("/")[0]
+            cpu_model = drive_data[6]
+            server_model = drive_data[7].split("/")[0]
+
             fio_data = reader.readline().split(";")
             fio_data[-1] = fio_data[-1].rstrip("\n")
             job_info = fio_data[2].split("_")
@@ -76,9 +116,8 @@ def create_fiodict(file):
             iodepth = job_info[3][2:]
             bs = job_info[4][2:]
             bs = bs.replace("k", "")
-            cpu_model = drive_data[5]
-            server_model = drive_data[6].split("/")[0]
 
+            fio_dict["friendly_name"] = friendly_name
             fio_dict["model"] = model
             fio_dict["serial"] = serial
             fio_dict["fw_rev"] = fw_rev
@@ -90,11 +129,24 @@ def create_fiodict(file):
             fio_dict["iodepth"] = iodepth
             fio_dict["cpu_model"] = cpu_model
             fio_dict["server_model"] = server_model
-            
-            for i in range(len(fio_vars)):
-                fio_dict[fio_vars[i]] = fio_data[i]
+
+            i = 0
+            j = 0
+
+            while i < len(fio_vars):
+                if "=" in fio_data[j]:
+                    percentile_data = fio_data[j].split("=")
+                    percentile = percentile_data[0]
+                    percentile_val = percentile_data[1]
+                    fio_dict[fio_vars[i]] = percentile
+                    fio_dict[fio_vars[i+1]] = percentile_val
+                    i += 2
+                else:
+                    fio_dict[fio_vars[i]] = fio_data[j]
+                    i += 1
+                j += 1
     #for k, v in fio_dict.items():
-        #print(k, v)
+    #    print(k, v)
     return fio_dict
 
 
