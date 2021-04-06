@@ -72,25 +72,25 @@ sql_server = microsoftsqlapi.SQLServerAPI(driver, server, database_name, usernam
 
 
 def execute(benchmark, data_folder_name):
-    if benchmark == "fio":
-        insert_data_fio(data_folder_name)
+    if benchmark == "fio_expanded":
+        insert_data_fio_expanded(data_folder_name)
     elif benchmark == "hammerdb":
         insert_data_hammerdb(data_folder_name)
 
 
-def insert_data_fio(data_folder_name):
+def insert_data_fio_expanded(data_folder_name):
     # Obtain the path to the data, and then create a list of just files, not directories.
     # Assumes data is in the home directory
     data_folder_path = Path(r"/home/" + username + "/" + data_folder_name).glob('**/*')    
     data_files = [file for file in data_folder_path if file.is_file()]
     for file in data_files:
-        fio_dict = create_fiodict(file)
+        fio_dict = create_fiodict_expanded(file)
         if fio_dict:
             print(str(file))
-            sql_server.insert_fio(fio_dict)
+            sql_server.insert_fio_expanded(fio_dict)
 
 
-def create_fiodict(file):
+def create_fiodict_expanded(file):
     fio_dict = {}
 
     # Only open relevant FIO files, which will have the bs string in the file name
