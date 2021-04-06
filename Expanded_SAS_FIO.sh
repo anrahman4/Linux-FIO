@@ -128,7 +128,7 @@ do
 done 
 mv ${bs}_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
 
-sudo python3 database_insert fio_expanded ${bs}/
+sudo python3 /home/labuser/database_insert.py fio_expanded ${bs}/
 
 done
 
@@ -176,7 +176,7 @@ do
 done 
 mv ${bs}_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
 
-sudo python3 database_insert fio_expanded ${bs}/
+sudo python3 /home/labuser/database_insert.py fio_expanded ${bs}/
 
 done
 
