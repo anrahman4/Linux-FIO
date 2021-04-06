@@ -56,7 +56,7 @@ class SQLServerAPI:
         cnxn.close()
         return "Insertion of HammerDB Data Successful"
 
-    def insert_fio(self, key_dict):
+    def insert_fio_expanded(self, key_dict):
         cnxn = pyodbc.connect(
             'DRIVER=' + self.DRIVER +
             ';SERVER=' + self.SERVER +
