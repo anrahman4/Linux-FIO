@@ -27,6 +27,7 @@ echo "FW_REV: $fw_rev"
 
 date=$(date '+%m-%d-%Y')
 timestamp=$(date +'%T')
+timestamp=`echo $timestamp | tr : -`
 result_dir=`echo "${vendor}_${product}_${serial}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}" | xargs`
 run_output_dir="Run_Output"
 rand_output_dir="Random"
@@ -128,7 +129,7 @@ do
 done 
 mv ${bs}_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
 
-sudo python3 /home/labuser/database_insert.py fio_expanded ${bs}/
+sudo python3 /home/labuser/database_insert.py fio_expanded ${result_dir}/${run_output_dir}/${rand_output_dir}/${bs}/
 
 done
 
@@ -176,7 +177,7 @@ do
 done 
 mv ${bs}_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
 
-sudo python3 /home/labuser/database_insert.py fio_expanded ${bs}/
+sudo python3 /home/labuser/database_insert.py fio_expanded ${result_dir}/${run_output_dir}/${seq_output_dir}/${bs}/
 
 done
 
