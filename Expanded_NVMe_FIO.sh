@@ -7,7 +7,7 @@
 NVMEDRIVE=$1
 echo "Benchmark Drive: $NVMEDRIVE"
 drive_name=$2
-echo "Drive Name: $2"
+echo "Drive Name: $drive_name"
 
 testpath=/dev/$NVMEDRIVE
 echo $testpath
