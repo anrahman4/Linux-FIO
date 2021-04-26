@@ -99,7 +99,14 @@ def create_fiodict_expanded(file):
     if "bs" in str_file:
         with open(file, 'r') as reader:
             drive_data = str_file.split("_")
-            friendly_name = drive_data[0].split("/")[-1]
+            drive_name = drive_data[0].split("/")[-1]
+            drive_name = friendly_name.split("-")
+            friendly_name = ""
+            for i in range(len(drive_name)):
+                if i == 0:
+                    friendly_name = friendly_name + drive_name[i]
+                else:
+                    friendly_name = friendly_name + " " + drive_name[i]
             model = drive_data[1]
             serial = drive_data[2]
             fw_rev = drive_data[3]
