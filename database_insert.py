@@ -100,7 +100,7 @@ def create_fiodict_expanded(file):
         with open(file, 'r') as reader:
             drive_data = str_file.split("_")
             drive_name = drive_data[0].split("/")[-1]
-            drive_name = friendly_name.split("-")
+            drive_name = drive_name.split("-")
             friendly_name = ""
             for i in range(len(drive_name)):
                 if i == 0:
