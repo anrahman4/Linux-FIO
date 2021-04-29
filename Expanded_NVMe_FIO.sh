@@ -93,7 +93,7 @@ seq_block_size=(128k 512k 1024k)
 
 #numjobs
 rnd_qd=(1 8 16 32 64 128 256)
-seq_qd=(1)
+seq_qd=(1 8 16 32 64 128 256)
 
 #percentile_list
 perc_list="99:99.9:99.99:99.999:99.9999:100"
