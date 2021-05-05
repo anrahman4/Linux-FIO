@@ -53,7 +53,7 @@ cd ${telemetry_dir}
 
 echo "Getting telemetry log prior to running workload started at"
 date
-nvme telemetry-log /dev/$NVMEDRIVE --output-file=CD6_telemetry_${date}_before_workload
+nvme telemetry-log /dev/$NVMEDRIVE --output-file=${model_num}_telemetry_${date}_before_workload
 
 echo "Getting telemetry log prior to running workload completed at"
 date
@@ -173,7 +173,7 @@ cd ${telemetry_dir}
 
 echo "Getting telemetry log after running workload started at"
 date
-nvme telemetry-log /dev/$NVMEDRIVE --output-file=CD6_telemetry_${date}_after_workload
+nvme telemetry-log /dev/$NVMEDRIVE --output-file=${model_num}_telemetry_${date}_after_workload
 
 echo "Getting telemetry log after running workload completed at"
 date
