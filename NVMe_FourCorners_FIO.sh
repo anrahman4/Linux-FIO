@@ -79,7 +79,7 @@ rnd_rd_qd=64
 rnd_wr_qd=64
 mix_rnd_rd_wr_qd=64
 
-run_type="normal"
+run_type="terse"
 
 echo "Sequential preconditioning for bs=128K started at"
 date
