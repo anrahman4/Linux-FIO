@@ -79,7 +79,7 @@ rnd_rd_qd=64
 rnd_wr_qd=64
 mix_rnd_rd_wr_qd=64
 
-run_type="terse"
+run_type="normal"
 
 echo "Sequential preconditioning for bs=128K started at"
 date
@@ -123,8 +123,8 @@ date
 
 echo "Random preconditioning for bs=4K started at"
 date
-echo "workload:fio --direct=1 --rw=randwrite  --bs=4K --iodepth=128 --ioengine=${ioeng} --numjobs=1 --norandommap=0 --randrepeat=0 --name=Ran_precondition_bs4K_qd128_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
-fio --direct=1 --rw=randwrite  --bs=4K --iodepth=128 --ioengine=${ioeng} --numjobs=1 --norandommap=0 --randrepeat=0 --name=Ran_precondition_bs4K_qd128_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
+echo "workload:fio --direct=1 --rw=randwrite  --bs=4K --iodepth=128 --ioengine=${ioeng} --numjobs=1 --norandommap=0 --randrepeat=0 --name=Ran_precondition_bs4K_qd128_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=6"
+fio --direct=1 --rw=randwrite  --bs=4K --iodepth=128 --ioengine=${ioeng} --numjobs=1 --norandommap=0 --randrepeat=0 --name=Ran_precondition_bs4K_qd128_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=6
 echo "Random preconditioning done at"
 date
 
@@ -134,6 +134,27 @@ echo "Random Write bs=4k t${t} qd${rnd_wr_qd}"
 date
 echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randwrite --bs=4k --iodepth=${rnd_wr_qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randwrite_${ioeng}_t${t}_qd${rnd_wr_qd}_bs4k  --filename=/dev/$NVMEDRIVE --output=${result_dir}-randwrite-bs4k-threads${t}-depth${rnd_wr_qd}"
 fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randwrite --bs=4k --iodepth=${rnd_wr_qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randwrite_${ioeng}_t${t}_qd${rnd_wr_qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}_randwrite-bs4k-threads${t}-depth${rnd_wr_qd}
+date
+
+done
+
+for t in "${threads[@]}"; do
+
+echo "Random Mixed 30% Read 70% Write bs=4k t${t} qd${mix_rnd_rd_wr_qd}"
+date
+echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=30 --rwmixwrite=70 --bs=4k --iodepth=${mix_rnd_rd_wr_qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread30write70_${ioeng}_t${t}_qd${mix_rnd_rd_wr_qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread30write70_-bs4k-threads${t}-depth${mix_rnd_rd_wr_qd}"
+fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=30 --rwmixwrite=70 --bs=4k --iodepth=${mix_rnd_rd_wr_qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread30write70_${ioeng}_t${t}_qd${mix_rnd_rd_wr_qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread30write70-bs4k-threads${t}-depth${mix_rnd_rd_wr_qd}
+date
+
+done
+
+
+for t in "${threads[@]}"; do
+
+echo "Random Mixed 50% Read 50% Write bs=4k t${t} qd${mix_rnd_rd_wr_qd}"
+date
+echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=50 --rwmixwrite=50 --bs=4k --iodepth=${mix_rnd_rd_wr_qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread50write50_${ioeng}_t${t}_qd${mix_rnd_rd_wr_qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread50write50_-bs4k-threads${t}-depth${mix_rnd_rd_wr_qd}"
+fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=50 --rwmixwrite=50 --bs=4k --iodepth=${mix_rnd_rd_wr_qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread50write50_${ioeng}_t${t}_qd${mix_rnd_rd_wr_qd}_bs4k --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread50write50-bs4k-threads${t}-depth${mix_rnd_rd_wr_qd}
 date
 
 done
@@ -166,8 +187,13 @@ do
 done 
 
 
-mv output.csv ${run_output_dir}/output.csv
+mv output.csv ${result_dir}/output.csv
 
+cd /home/labuser/${result_dir}/${run_output_dir}
+
+for f in *; do mv "$f" "$f.txt"; done
+
+cd ..
 
 cd ${telemetry_dir}
 
