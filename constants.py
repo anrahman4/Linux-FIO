@@ -1,5 +1,5 @@
 DRIVER = "{ODBC Driver 17 for SQL Server}"
 SERVER = "10.90.133.207"
-DATABASE_NAME = "APL-Performance"
+DATABASE_NAME = "APL_Performance"
 USERNAME = "labuser"
 PASSWORD = "Kioxia123"
