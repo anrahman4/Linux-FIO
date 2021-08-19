@@ -30,8 +30,11 @@ username = "labuser"
 
 
 class ExcelCreator:
-    def __init__(self, excel_name, data_folder_name):
+    def __init__(self, excel_name, data_folder_name, is_linux):
         self.data_folder_name = data_folder_name
+        self.is_linux = is_linux
+        self.windows_path = "C:/Users/rahmaa/PycharmProjects/excelcreator/"
+        self.linux_path = "/home/" + username + "/" + self.data_folder_name
         self.excel_name = excel_name
         self.fio_list_of_dicts = []
         self.create_fiodicts()
@@ -42,24 +45,36 @@ class ExcelCreator:
         # Obtain the path to the data, and then create a list of just files, not directories.
         # Assumes data is in the home directory
         temp_dicts = []
-        data_folder_path = Path(r"/home/" + username + "/" + self.data_folder_name).glob('**/*')
-        data_files = [file for file in data_folder_path if file.is_file()]
-        for file in data_files:
-            fiodict = self.create_fiodict(file)
-            temp_dicts.append(fiodict)
-        for dict in temp_dicts:
-            if dict:
-                self.fio_list_of_dicts.append(dict)
+        # For Linux
+        if self.is_linux:
+            data_folder_path = Path(self.linux_path).glob('**/*')
+            data_files = [file for file in data_folder_path if file.is_file()]
+            for file in data_files:
+                fiodict = self.create_fiodict(file)
+                temp_dicts.append(fiodict)
+            for dict in temp_dicts:
+                if dict:
+                    self.fio_list_of_dicts.append(dict)
+        # For Windows
+        else:
+            data_folder_path = Path(self.windows_path).glob('**/*.txt')
+            data_files = [str(file) for file in data_folder_path]
+            for file in data_files:
+                fiodict = self.create_fiodict(file)
+                temp_dicts.append(fiodict)
+            for dict in temp_dicts:
+                if dict:
+                    self.fio_list_of_dicts.append(dict)
 
     def create_fiodict(self, file):
         fio_dict = {}
 
         # Only open relevant FIO files, which will have the bs string in the file name
         # Create dictionary of FIO vars and values
-        str_file = str(file)
-        if "bs" in str_file:
-            with open(file, 'r') as reader:
-                drive_data = str_file.split("_")
+
+        if "bs" in str(file):
+            with open(str(file), 'r') as reader:
+                drive_data = str(file).split("_")
                 model = drive_data[0].split("/")[-1]
                 serial = drive_data[1]
                 fw_rev = drive_data[2]
@@ -126,11 +141,11 @@ class ExcelCreator:
         worksheet.column_dimensions['C'].width = 46.91
 
         worksheet['A1'] = "Specifications"
-        worksheet['C1'] = drive_info[0]
+        worksheet['C1'] = drive_info[0].replace("-", " ")
         worksheet['C3'] = drive_info[0]
         worksheet['C4'] = drive_info[1]
-        worksheet['C11'] = drive_info[6]
-        worksheet['C12'] = drive_info[5]
+        worksheet['C11'] = drive_info[6].replace("/", "").replace("-", " ")
+        worksheet['C12'] = drive_info[5].replace("-", " ")
         worksheet['A2'] = "Capacity"
         worksheet['A3'] = "Standard Model Number"
         worksheet['A4'] = "Standard Serial Number"
@@ -148,25 +163,35 @@ class ExcelCreator:
         worksheet.merge_cells('A20:A22')
         worksheet.merge_cells('A23:A25')
         worksheet.merge_cells('A26:A32')
-        worksheet.merge_cells('A34:A36')
-        worksheet.merge_cells('A37:A39')
-        worksheet.merge_cells('A40:A42')
-        worksheet.merge_cells('A43:A45')
-        worksheet.merge_cells('A46:A52')
+        worksheet.merge_cells('A33:A39')
+        worksheet.merge_cells('A40:A46')
 
-        worksheet['A14'] = "Sequential Read (MB/s) Sustained, 128KB, QD32, T1"
-        worksheet['A17'] = "Sequential Write (MB/s) Sustained, 128KB, QD32, T1"
-        worksheet['A20'] = "Random Read (IOPS) Sustained, 4KB, QD64, T1"
-        worksheet['A23'] = "Random Write (IOPS) Sustained, 4KB, QD64, T1"
-        worksheet['A26'] = "Random 30% Write (IOPS) Sustained, 4KB, QD64, T1"
-        worksheet['A34'] = "Sequential Read (MB/s) Sustained, 128KB, QD32, T8"
-        worksheet['A37'] = "Sequential Write (MB/s) Sustained, 128KB, QD32, T8"
-        worksheet['A40'] = "Random Read (IOPS) Sustained, 4KB, QD64, T8"
-        worksheet['A43'] = "Random Write (IOPS) Sustained, 4KB, QD64, T8"
-        worksheet['A46'] = "Random 30% Write (IOPS) Sustained, 4KB, QD64, T8"
+        worksheet.merge_cells('A48:A50')
+        worksheet.merge_cells('A51:A53')
+        worksheet.merge_cells('A54:A56')
+        worksheet.merge_cells('A57:A59')
+        worksheet.merge_cells('A60:A66')
+        worksheet.merge_cells('A67:A73')
+        worksheet.merge_cells('A74:A80')
 
-        align_cells = ['A14', 'A17', 'A20', 'A23', 'A26', 'A34', 'A37', 'A40', 'A43', 'A46', 'C1', 'C2', 'C3', 'C4',
-                       'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12', 'C13', 'C33']
+        worksheet['A14'] = "Sequential Read (MB/s) Sustained, 128KB, QD256, T1"
+        worksheet['A17'] = "Sequential Write (MB/s) Sustained, 128KB, QD256, T1"
+        worksheet['A20'] = "Random Read (IOPS) Sustained, 4KB, QD256, T1"
+        worksheet['A23'] = "Random Write (IOPS) Sustained, 4KB, QD256, T1"
+        worksheet['A26'] = "Random 30% Write (IOPS) Sustained, 4KB, QD256, T1"
+        worksheet['A33'] = "Random 50% Write (IOPS) Sustained, 4KB, QD256, T1"
+        worksheet['A40'] = "Random 70% Write (IOPS) Sustained, 4KB, QD256, T1"
+
+        worksheet['A48'] = "Sequential Read (MB/s) Sustained, 128KB, QD256, T8"
+        worksheet['A51'] = "Sequential Write (MB/s) Sustained, 128KB, QD256, T8"
+        worksheet['A54'] = "Random Read (IOPS) Sustained, 4KB, QD256, T8"
+        worksheet['A57'] = "Random Write (IOPS) Sustained, 4KB, QD256, T8"
+        worksheet['A60'] = "Random 30% Write (IOPS) Sustained, 4KB, QD256, T8"
+        worksheet['A67'] = "Random 50% Write (IOPS) Sustained, 4KB, QD256, T8"
+        worksheet['A74'] = "Random 70% Write (IOPS) Sustained, 4KB, QD256, T8"
+
+        align_cells = ['A14', 'A17', 'A20', 'A23', 'A26', 'A33', 'A40', 'A48', 'A51', 'A54', 'A57', 'A60', 'A67', 'A74',
+                       'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12', 'C13', 'C47']
         for cell in align_cells:
             worksheet[cell].alignment = Alignment(horizontal='center', vertical='center')
 
@@ -191,30 +216,57 @@ class ExcelCreator:
         worksheet['B30'] = "Total IOPS"
         worksheet['B31'] = "Average Read Latency (usec)"
         worksheet['B32'] = "Average Write Latency (usec)"
-        worksheet['C13'] = "1 FIO Thread"
-
-        worksheet['A33'] = "Performance for 8 Threads"
-        worksheet['B33'] = "Test Metrics"
-        worksheet['B34'] = "Throughput (MB/s)"
-        worksheet['B35'] = "IOPS"
-        worksheet['B36'] = "Average Read Latency (usec)"
-        worksheet['B37'] = "Throughput (MB/s)"
-        worksheet['B38'] = "IOPS"
+        worksheet['B33'] = "Read Throughput (MB/s)"
+        worksheet['B34'] = "Write Throughput (MB/s)"
+        worksheet['B35'] = "Read IOPS"
+        worksheet['B36'] = "Write IOPS"
+        worksheet['B37'] = "Total IOPS"
+        worksheet['B38'] = "Average Read Latency (usec)"
         worksheet['B39'] = "Average Write Latency (usec)"
-        worksheet['B40'] = "Throughput (MB/s)"
-        worksheet['B41'] = "IOPS"
-        worksheet['B42'] = "Average Read Latency (usec)"
-        worksheet['B43'] = "Throughput (MB/s)"
-        worksheet['B44'] = "IOPS"
-        worksheet['B45'] = "Average Write Latency (usec)"
-        worksheet['B46'] = "Read Throughput (MB/s)"
-        worksheet['B47'] = "Write Throughput (MB/s)"
-        worksheet['B48'] = "Read IOPS"
-        worksheet['B49'] = "Write IOPS"
-        worksheet['B50'] = "Total IOPS"
-        worksheet['B51'] = "Average Read Latency (usec)"
-        worksheet['B52'] = "Average Write Latency (usec)"
-        worksheet['C33'] = "8 FIO Threads"
+        worksheet['B40'] = "Read Throughput (MB/s)"
+        worksheet['B41'] = "Write Throughput (MB/s)"
+        worksheet['B42'] = "Read IOPS"
+        worksheet['B43'] = "Write IOPS"
+        worksheet['B44'] = "Total IOPS"
+        worksheet['B45'] = "Average Read Latency (usec)"
+        worksheet['B46'] = "Average Write Latency (usec)"
+        worksheet['C13'] = "1 FIO Thread"
+        worksheet['A47'] = "Performance for 8 Threads"
+        worksheet['B47'] = "Test Metrics"
+        worksheet['B48'] = "Throughput (MB/s)"
+        worksheet['B49'] = "IOPS"
+        worksheet['B50'] = "Average Read Latency (usec)"
+        worksheet['B51'] = "Throughput (MB/s)"
+        worksheet['B52'] = "IOPS"
+        worksheet['B53'] = "Average Write Latency (usec)"
+        worksheet['B54'] = "Throughput (MB/s)"
+        worksheet['B55'] = "IOPS"
+        worksheet['B56'] = "Average Read Latency (usec)"
+        worksheet['B57'] = "Throughput (MB/s)"
+        worksheet['B58'] = "IOPS"
+        worksheet['B59'] = "Average Write Latency (usec)"
+        worksheet['B60'] = "Read Throughput (MB/s)"
+        worksheet['B61'] = "Write Throughput (MB/s)"
+        worksheet['B62'] = "Read IOPS"
+        worksheet['B63'] = "Write IOPS"
+        worksheet['B64'] = "Total IOPS"
+        worksheet['B65'] = "Average Read Latency (usec)"
+        worksheet['B66'] = "Average Write Latency (usec)"
+        worksheet['B67'] = "Read Throughput (MB/s)"
+        worksheet['B68'] = "Write Throughput (MB/s)"
+        worksheet['B69'] = "Read IOPS"
+        worksheet['B70'] = "Write IOPS"
+        worksheet['B71'] = "Total IOPS"
+        worksheet['B72'] = "Average Read Latency (usec)"
+        worksheet['B73'] = "Average Write Latency (usec)"
+        worksheet['B74'] = "Read Throughput (MB/s)"
+        worksheet['B75'] = "Write Throughput (MB/s)"
+        worksheet['B76'] = "Read IOPS"
+        worksheet['B77'] = "Write IOPS"
+        worksheet['B78'] = "Total IOPS"
+        worksheet['B79'] = "Average Read Latency (usec)"
+        worksheet['B80'] = "Average Write Latency (usec)"
+        worksheet['C47'] = "8 FIO Threads"
 
         self.set_fill(worksheet, 'A1:C1', "black")
         self.set_font(worksheet, 'A1:C1', "white")
@@ -224,18 +276,30 @@ class ExcelCreator:
         self.set_font(worksheet, 'A11:C11', "white")
         self.set_fill(worksheet, 'A13:C13', "gray")
         self.set_font(worksheet, 'A13:C13', "white")
-        self.set_fill(worksheet, 'A33:C33', "gray")
-        self.set_font(worksheet, 'A33:C33', "white")
-        self.set_fill(worksheet, 'A17:B17', "lightgray")
-        self.set_fill(worksheet, 'B18:B19', "lightgray")
-        self.set_fill(worksheet, 'A23:B23', "lightgray")
-        self.set_fill(worksheet, 'B24:B25', "lightgray")
-        self.set_fill(worksheet, 'A37:B37', "lightgray")
-        self.set_fill(worksheet, 'B38:B39', "lightgray")
-        self.set_fill(worksheet, 'A43:B43', "lightgray")
-        self.set_fill(worksheet, 'B44:B45', "lightgray")
+        self.set_fill(worksheet, 'A47:C47', "gray")
+        self.set_font(worksheet, 'A47:C47', "white")
 
-        self.set_border(worksheet, 'C1:C52', "left")
+        self.set_fill(worksheet, 'A17:A19', "lightgray")
+        self.set_fill(worksheet, 'B17:B19', "lightgray")
+        self.set_fill(worksheet, 'C17:C19', "lightgray")
+        self.set_fill(worksheet, 'A23:A25', "lightgray")
+        self.set_fill(worksheet, 'B23:B25', "lightgray")
+        self.set_fill(worksheet, 'C23:C25', "lightgray")
+        self.set_fill(worksheet, 'A33:A39', "lightgray")
+        self.set_fill(worksheet, 'B33:B39', "lightgray")
+        self.set_fill(worksheet, 'C33:C39', "lightgray")
+        self.set_fill(worksheet, 'A51:A53', "lightgray")
+        self.set_fill(worksheet, 'B51:B53', "lightgray")
+        self.set_fill(worksheet, 'C51:C53', "lightgray")
+        self.set_fill(worksheet, 'A57:A59', "lightgray")
+        self.set_fill(worksheet, 'B57:B59', "lightgray")
+        self.set_fill(worksheet, 'C57:C59', "lightgray")
+        self.set_fill(worksheet, 'A67:A73', "lightgray")
+        self.set_fill(worksheet, 'B67:B73', "lightgray")
+        self.set_fill(worksheet, 'C67:C73', "lightgray")
+
+        self.set_border(worksheet, 'C1:C80', "left")
+        self.set_border(worksheet, 'D1:D80', "left")
         self.set_border(worksheet, 'A5:C5', "topbot")
         self.set_border(worksheet, 'A11:C11', "topbot")
         self.set_border(worksheet, 'A13:C13', "topbot")
@@ -243,65 +307,92 @@ class ExcelCreator:
         self.set_border(worksheet, 'A19:C19', "bot")
         self.set_border(worksheet, 'A22:C22', "bot")
         self.set_border(worksheet, 'A25:C25', "bot")
-        self.set_border(worksheet, 'A33:C33', "topbot")
-        self.set_border(worksheet, 'A36:C36', "bot")
+        self.set_border(worksheet, 'A32:C32', "bot")
         self.set_border(worksheet, 'A39:C39', "bot")
-        self.set_border(worksheet, 'A42:C42', "bot")
-        self.set_border(worksheet, 'A45:C45', "bot")
-        self.set_border(worksheet, 'A52:C52', "bot")
-        self.set_border(worksheet, 'C5:C5', "topbotleft")
-        self.set_border(worksheet, 'C11:C11', "topbotleft")
-        self.set_border(worksheet, 'C13:C13', "topbotleft")
+        self.set_border(worksheet, 'A46:C46', "bot")
+        self.set_border(worksheet, 'A47:C47', "bot")
+        self.set_border(worksheet, 'A50:C50', "bot")
+        self.set_border(worksheet, 'A53:C53', "bot")
+        self.set_border(worksheet, 'A56:C56', "bot")
+        self.set_border(worksheet, 'A59:C59', "bot")
+        self.set_border(worksheet, 'A66:C66', "bot")
+        self.set_border(worksheet, 'A73:C73', "bot")
+        self.set_border(worksheet, 'A80:C80', "bot")
         self.set_border(worksheet, 'C16:C16', "botleft")
         self.set_border(worksheet, 'C19:C19', "botleft")
         self.set_border(worksheet, 'C22:C22', "botleft")
         self.set_border(worksheet, 'C25:C25', "botleft")
-        self.set_border(worksheet, 'C33:C33', "botleft")
-        self.set_border(worksheet, 'C36:C36', "botleft")
+        self.set_border(worksheet, 'C32:C32', "botleft")
         self.set_border(worksheet, 'C39:C39', "botleft")
-        self.set_border(worksheet, 'C42:C42', "botleft")
-        self.set_border(worksheet, 'C45:C45', "botleft")
-        self.set_border(worksheet, 'C52:C52', "botleft")
+        self.set_border(worksheet, 'C46:C46', "botleft")
+        self.set_border(worksheet, 'C50:C50', "botleft")
+        self.set_border(worksheet, 'C53:C53', "botleft")
+        self.set_border(worksheet, 'C56:C56', "botleft")
+        self.set_border(worksheet, 'C59:C59', "botleft")
+        self.set_border(worksheet, 'C66:C66', "botleft")
+        self.set_border(worksheet, 'C73:C73', "botleft")
+        self.set_border(worksheet, 'C80:C80', "botleft")
+
+    def input_raw_output_data(self, worksheet):
+        i = 0
+        test_row = 2
+        for fio_dict in self.fio_list_of_dicts:
+            for col in worksheet.iter_cols(min_row=test_row, max_col=130, max_row=test_row):
+                for cell in col:
+                    cell.value = fio_dict[fio_vars[i]]
+                    i += 1
+            test_row += 1
+            i = 0
 
     def input_drive_data(self, clean_data_ws, raw_data_ws):
         i = 2
-        while i < 12:
+        while i < 16:
             job_info = str(raw_data_ws['C' + str(i)].value).split("_")
             job_type = job_info[0]
             threads = job_info[2]
+            qd = job_info[3].upper()
             if "seqwrite" == job_type and "t1" == threads:
+                clean_data_ws['A17'] = "Sequential Write (MB/s) Sustained, 128KB, %s, T1" % qd
                 clean_data_ws['C17'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
                 clean_data_ws['C18'] = int(raw_data_ws['AW' + str(i)].value)
                 clean_data_ws['C19'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
             elif "seqwrite" == job_type and "t8" == threads:
-                clean_data_ws['C37'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
-                clean_data_ws['C38'] = int(raw_data_ws['AW' + str(i)].value)
-                clean_data_ws['C39'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
+                clean_data_ws['A51'] = "Sequential Write (MB/s) Sustained, 128KB, %s, T8" % qd
+                clean_data_ws['C51'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C52'] = int(raw_data_ws['AW' + str(i)].value)
+                clean_data_ws['C53'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
             elif "seqread" == job_type and "t1" == threads:
+                clean_data_ws['A14'] = "Sequential Read (MB/s) Sustained, 128KB, %s, T1" % qd
                 clean_data_ws['C14'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
                 clean_data_ws['C15'] = int(raw_data_ws['H' + str(i)].value)
                 clean_data_ws['C16'] = round(float(raw_data_ws['P' + str(i)].value), 0)
             elif "seqread" == job_type and "t8" == threads:
-                clean_data_ws['C34'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
-                clean_data_ws['C35'] = int(raw_data_ws['H' + str(i)].value)
-                clean_data_ws['C36'] = round(float(raw_data_ws['P' + str(i)].value), 0)
+                clean_data_ws['A48'] = "Sequential Read (MB/s) Sustained, 128KB, %s, T8" % qd
+                clean_data_ws['C48'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C49'] = int(raw_data_ws['H' + str(i)].value)
+                clean_data_ws['C50'] = round(float(raw_data_ws['P' + str(i)].value), 0)
             elif "randwrite" == job_type and "t1" == threads:
+                clean_data_ws['A23'] = "Random Write (IOPS) Sustained, 4KB, %s, T1" % qd
                 clean_data_ws['C23'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
                 clean_data_ws['C24'] = int(raw_data_ws['AW' + str(i)].value)
                 clean_data_ws['C25'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
             elif "randwrite" == job_type and "t8" == threads:
-                clean_data_ws['C43'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
-                clean_data_ws['C44'] = int(raw_data_ws['AW' + str(i)].value)
-                clean_data_ws['C45'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
+                clean_data_ws['A57'] = "Random Write (IOPS) Sustained, 4KB, %s, T8" % qd
+                clean_data_ws['C57'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C58'] = int(raw_data_ws['AW' + str(i)].value)
+                clean_data_ws['C59'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
             elif "randread" == job_type and "t1" == threads:
+                clean_data_ws['A20'] = "Random Read (IOPS) Sustained, 4KB, %s, T1" % qd
                 clean_data_ws['C20'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
                 clean_data_ws['C21'] = int(raw_data_ws['H' + str(i)].value)
                 clean_data_ws['C22'] = round(float(raw_data_ws['P' + str(i)].value), 0)
             elif "randread" == job_type and "t8" == threads:
-                clean_data_ws['C40'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
-                clean_data_ws['C41'] = int(raw_data_ws['H' + str(i)].value)
-                clean_data_ws['C42'] = round(float(raw_data_ws['P' + str(i)].value), 0)
+                clean_data_ws['A54'] = "Random Read (IOPS) Sustained, 4KB, %s, T8" % qd
+                clean_data_ws['C54'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C55'] = int(raw_data_ws['H' + str(i)].value)
+                clean_data_ws['C56'] = round(float(raw_data_ws['P' + str(i)].value), 0)
             elif "randmixedread70write30" == job_type and "t1" == threads:
+                clean_data_ws['A26'] = "Random 30%% Write (IOPS) Sustained, 4KB, %s, T1" % qd
                 clean_data_ws['C26'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
                 clean_data_ws['C27'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
                 clean_data_ws['C28'] = int(raw_data_ws['H' + str(i)].value)
@@ -310,13 +401,50 @@ class ExcelCreator:
                 clean_data_ws['C31'] = round(float(raw_data_ws['P' + str(i)].value), 0)
                 clean_data_ws['C32'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
             elif "randmixedread70write30" == job_type and "t8" == threads:
-                clean_data_ws['C46'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
-                clean_data_ws['C47'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
-                clean_data_ws['C48'] = int(raw_data_ws['H' + str(i)].value)
-                clean_data_ws['C49'] = int(raw_data_ws['AW' + str(i)].value)
-                clean_data_ws['C50'] = clean_data_ws['C48'].value + clean_data_ws['C49'].value
-                clean_data_ws['C51'] = round(float(raw_data_ws['P' + str(i)].value), 0)
-                clean_data_ws['C52'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
+                clean_data_ws['A60'] = "Random 30%% Write (IOPS) Sustained, 4KB, %s, T8" % qd
+                clean_data_ws['C60'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C61'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C62'] = int(raw_data_ws['H' + str(i)].value)
+                clean_data_ws['C63'] = int(raw_data_ws['AW' + str(i)].value)
+                clean_data_ws['C64'] = clean_data_ws['C62'].value + clean_data_ws['C63'].value
+                clean_data_ws['C65'] = round(float(raw_data_ws['P' + str(i)].value), 0)
+                clean_data_ws['C66'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
+            elif "randmixedread50write50" == job_type and "t1" == threads:
+                clean_data_ws['A33'] = "Random 50%% Write (IOPS) Sustained, 4KB, %s, T1" % qd
+                clean_data_ws['C33'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C34'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C35'] = int(raw_data_ws['H' + str(i)].value)
+                clean_data_ws['C36'] = int(raw_data_ws['AW' + str(i)].value)
+                clean_data_ws['C37'] = clean_data_ws['C35'].value + clean_data_ws['C36'].value
+                clean_data_ws['C38'] = round(float(raw_data_ws['P' + str(i)].value), 0)
+                clean_data_ws['C39'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
+            elif "randmixedread50write50" == job_type and "t8" == threads:
+                clean_data_ws['A67'] = "Random 50%% Write (IOPS) Sustained, 4KB, %s, T8" % qd
+                clean_data_ws['C67'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C68'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C69'] = int(raw_data_ws['H' + str(i)].value)
+                clean_data_ws['C70'] = int(raw_data_ws['AW' + str(i)].value)
+                clean_data_ws['C71'] = clean_data_ws['C69'].value + clean_data_ws['C70'].value
+                clean_data_ws['C72'] = round(float(raw_data_ws['P' + str(i)].value), 0)
+                clean_data_ws['C73'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
+            elif "randmixedread30write70" == job_type and "t1" == threads:
+                clean_data_ws['A40'] = "Random 70%% Write (IOPS) Sustained, 4KB, %s, T1" % qd
+                clean_data_ws['C40'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C41'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C42'] = int(raw_data_ws['H' + str(i)].value)
+                clean_data_ws['C43'] = int(raw_data_ws['AW' + str(i)].value)
+                clean_data_ws['C44'] = clean_data_ws['C42'].value + clean_data_ws['C43'].value
+                clean_data_ws['C45'] = round(float(raw_data_ws['P' + str(i)].value), 0)
+                clean_data_ws['C46'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
+            elif "randmixedread30write70" == job_type and "t8" == threads:
+                clean_data_ws['A74'] = "Random 70%% Write (IOPS) Sustained, 4KB, %s, T8" % qd
+                clean_data_ws['C74'] = round(int(raw_data_ws['G' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C75'] = round(int(raw_data_ws['AV' + str(i)].value) * 0.001024, 0)
+                clean_data_ws['C76'] = int(raw_data_ws['H' + str(i)].value)
+                clean_data_ws['C77'] = int(raw_data_ws['AW' + str(i)].value)
+                clean_data_ws['C78'] = clean_data_ws['C76'].value + clean_data_ws['C77'].value
+                clean_data_ws['C79'] = round(float(raw_data_ws['P' + str(i)].value), 0)
+                clean_data_ws['C80'] = round(float(raw_data_ws['BE' + str(i)].value), 0)
             i += 1
 
     def set_border(self, ws, cell_range, border_type):
@@ -328,7 +456,7 @@ class ExcelCreator:
             border = Border(left=Side(border_style='thin'), bottom=Side(border_style='thin'), top=Side(border_style='thin'))
         elif border_type == "botleft":
             border = Border(left=Side(border_style='thin'), bottom=Side(border_style='thin'))
-        else:
+        elif border_type == "bot":
             border = Border(bottom=Side(border_style='thin'))
         rows = ws[cell_range]
         for row in rows:
@@ -359,20 +487,10 @@ class ExcelCreator:
             for cell in col:
                 cell.font = font
 
-    def input_raw_output_data(self, worksheet):
-        i = 0
-        test_row = 2
-        for fio_dict in self.fio_list_of_dicts:
-            for col in worksheet.iter_cols(min_row=test_row, max_col=130, max_row=test_row):
-                for cell in col:
-                    cell.value = fio_dict[fio_vars[i]]
-                    i += 1
-            test_row += 1
-            i = 0
-
 
 if __name__ == "__main__":
-    data_folder_name = str(sys.argv[1])
+    #data_folder_name = str(sys.argv[1])
+    data_folder_name = "Dell-Ent-NVMe-CM6-RI_11K0A00RTCE7_2.1.5_20210818_155702_AMD-EPYC-7552-48-Core-Processor_PowerEdge-R7525"
     time_stamp = str(data_folder_name).split("_")[3] + "_" + str(data_folder_name).split("_")[4]
     excel_name = str(data_folder_name.split("_")[0]) + "_FIO_FourCorners_Data_" + time_stamp + ".xlsx"
-    ExcelCreator(excel_name, data_folder_name)
+    ExcelCreator(excel_name, data_folder_name, False)
