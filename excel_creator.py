@@ -489,8 +489,8 @@ class ExcelCreator:
 
 
 if __name__ == "__main__":
-    #data_folder_name = str(sys.argv[1])
-    data_folder_name = "Dell-Ent-NVMe-CM6-RI_11K0A00RTCE7_2.1.5_20210818_155702_AMD-EPYC-7552-48-Core-Processor_PowerEdge-R7525"
+    data_folder_name = str(sys.argv[1])
+    #data_folder_name = "Dell-Ent-NVMe-CM6-RI_11K0A00RTCE7_2.1.5_20210818_155702_AMD-EPYC-7552-48-Core-Processor_PowerEdge-R7525"
     time_stamp = str(data_folder_name).split("_")[3] + "_" + str(data_folder_name).split("_")[4]
     excel_name = str(data_folder_name.split("_")[0]) + "_FIO_FourCorners_Data_" + time_stamp + ".xlsx"
-    ExcelCreator(excel_name, data_folder_name, False)
+    ExcelCreator(excel_name, data_folder_name, True)
