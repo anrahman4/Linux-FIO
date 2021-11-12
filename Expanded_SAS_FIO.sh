@@ -64,9 +64,9 @@ run_type="terse"
 rnd_block_size=(4k 8k 16k 32k 64k 128k 512k 1024k)
 seq_block_size=(128k 512k 1024k)
 
-#numjobs
-rnd_qd=(1 8 16 32 64 128 256)
-seq_qd=(1 8 16 32 64 128 256)
+#queue depth
+rnd_qd=(1 2 4 8 16 32 64 128 256)
+seq_qd=(1 2 4 8 16 32 64 128 256)
 
 #percentile_list
 perc_list="99:99.9:99.99:99.999:99.9999:100"
