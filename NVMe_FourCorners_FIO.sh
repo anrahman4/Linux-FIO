@@ -75,11 +75,11 @@ cd ${run_output_dir}
 #iodepths
 seq_rd_qd=32
 seq_wr_qd=32
-rnd_rd_qd=64
-rnd_wr_qd=64
-mix_rnd_rd_wr_qd=64
+rnd_rd_qd=256
+rnd_wr_qd=32
+mix_rnd_rd_wr_qd=32
 
-run_type="terse"
+run_type="normal"
 
 echo "Sequential preconditioning for bs=128K started at"
 date
