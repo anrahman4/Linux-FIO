@@ -1,5 +1,5 @@
 #!/bin/bash
-#Usage: ./Expanded_NVMe_FIO.sh
+# Usage: ./Expanded_NVMe_FIO.sh nvme2n1 <drive_alias> > output.txt 2>&1 & 
 
 #read -p "Which drive should benchmark use? Existing data will be lost! [default 'nvme0n1']: " NVMEDRIVE
 #NVMEDRIVE=${NVMEDRIVE:-'nvme10n1'}
@@ -8,8 +8,6 @@ NVMEDRIVE=$1
 echo "Benchmark Drive: $NVMEDRIVE"
 drive_name=$2
 
-testpath=/dev/$NVMEDRIVE
-echo $testpath
 
 #drive_name=`sudo nvme id-ctrl $testpath | awk '$1=="subnqn" {print $3}' | cut -d ':' -f 3 | xargs`
 server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " - | xargs`
@@ -18,7 +16,8 @@ serial_num=`nvme id-ctrl $testpath | awk '$1=="sn" {print $3}'`
 model_num=`nvme id-ctrl $testpath | awk '$1=="mn" {print $3, $4, $5, $6, $7, $8}' | xargs | tr " " - | xargs`
 fw_rev=`nvme id-ctrl $testpath | awk '$1=="fr" {print $3}'`
 cap_Bytes=`nvme id-ctrl $testpath | awk '$1=="tnvmcap" {print $3}'`
-TB_multiplier=1000000000000
+
+#TB_multiplier=1000000000000
 echo "Drive Name: $drive_name"
 echo "Server: $server_model"
 echo "CPU: $cpu_model"
@@ -28,30 +27,23 @@ echo "FW_REV: $fw_rev"
 echo "Cap Bytes: $cap_Bytes"
 
 
-cap_TB=$(($cap_Bytes / $TB_multiplier))
-cap_TB=$((cap_TB+1))
+#cap_TB=$(($cap_Bytes / $TB_multiplier))
+#cap_TB=$((cap_TB+1))
 
 num_loops=2
-iosize=$(($cap_TB * $num_loops * 1000))
+#iosize=$(($cap_TB * $num_loops * 1000))
 
 date=$(date '+%m-%d-%Y')
 timestamp=$(date +'%T')
 timestamp=`echo $timestamp | tr : -`
 result_dir=`echo "${drive_name}_${model_num}_${serial_num}_${fw_rev}_${date}_${timestamp}_${cpu_model}_${server_model}" | xargs`
-telemetry_dir="Telemetry_Logs"
-run_output_dir="Run_Output"
-rand_output_dir="Random"
-seq_output_dir="Sequential"
+telemetry_dir="telemetry_logs"
+run_output_dir="run_output"
+rand_output_dir="random"
+seq_output_dir="sequential"
 outputcsv_dir="output_csv"
 
-
-if [ -d ${result_dir} ]
-then
-    echo "Directory ${result_dir} exists." 
-    exit 0
-else
-    mkdir ${result_dir}
-fi
+mkdir ${result_dir}
 
 cd ${result_dir}
 
@@ -111,8 +103,8 @@ cd ${bs}
 
 echo "Sequential preconditioning for bs=128k started at"
 date
-echo "workload:fio --direct=1 --rw=write  --bs=128k --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs128k_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3"
-fio --direct=1 --rw=write  --bs=128k --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs128k_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=3
+echo "workload:fio --direct=1 --rw=write  --bs=128k --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs128k_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=2"
+fio --direct=1 --rw=write  --bs=128k --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs128k_qd256_t1 --group_reporting --filename=/dev/$NVMEDRIVE  --output-format=terse --loops=2
 echo "workload independent preconditioning done at"
 date
 
