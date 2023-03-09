@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: ./Expanded_NVMe_FIO.sh nvme2n1 <drive_alias> > output.txt 2>&1 & 
+# Usage: ./Expanded_NVMe_FIO.sh <dev_device> <drive_alias> > output.txt 2>&1 & 
 
 #read -p "Which drive should benchmark use? Existing data will be lost! [default 'nvme0n1']: " NVMEDRIVE
 #NVMEDRIVE=${NVMEDRIVE:-'nvme10n1'}
@@ -8,6 +8,7 @@ NVMEDRIVE=$1
 echo "Benchmark Drive: $NVMEDRIVE"
 drive_name=$2
 
+testpath="/dev/${NVMEDRIVE}"
 
 #drive_name=`sudo nvme id-ctrl $testpath | awk '$1=="subnqn" {print $3}' | cut -d ':' -f 3 | xargs`
 server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " - | xargs`
