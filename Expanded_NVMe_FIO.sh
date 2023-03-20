@@ -85,8 +85,8 @@ rnd_block_size=(4k 8k 16k 32k 64k 128k 512k 1024k)
 seq_block_size=(128k 512k 1024k)
 
 #queue depth
-rnd_qd=(1 2 4 8 16 32 64 128 256)
-seq_qd=(1 2 4 8 16 32 64 128 256)
+rnd_qd=(1 2 4 8 16 32 64)
+seq_qd=(1 2 4 8 16 32 64)
 
 #percentile_list
 perc_list="99:99.9:99.99:99.999:99.9999:100"
@@ -129,6 +129,38 @@ then
     date
     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}"
     fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}
+    date
+elif [ ${qd} -eq 2 ]
+then
+    echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t1 qd${qd}"
+    date
+    echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}"
+    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}
+    date
+    
+    echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t2 qd${qd}"
+    date
+    echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=2 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}"
+    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=2 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}
+    date    
+elif [ ${qd} -eq 4 ]
+then
+    echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t2 qd${qd}"
+    date
+    echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=2 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}"
+    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=2 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}
+    date
+    
+    echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t4 qd${qd}"
+    date
+    echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=4 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}"
+    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=4 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}
+    date
+    
+    echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t8 qd${qd}"
+    date
+    echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=8 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}"
+    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=8 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/$NVMEDRIVE --output=${result_dir}_randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}
     date
 else
     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t8 qd${qd}"
