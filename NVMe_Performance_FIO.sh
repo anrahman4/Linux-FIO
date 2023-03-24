@@ -9,12 +9,11 @@ testpath="/dev/${NVMEDRIVE}"
 
 server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " - | xargs`
 cpu_model=`sudo cat /proc/cpuinfo | grep 'model name' | uniq | cut -d ':' -f 2 | xargs | tr " " - | tr "@" a | tr "(" - | tr ")" - | xargs`
-serial_num=`nvme id-ctrl $testpath | awk '$1=="sn" {print $3}'`
-model_num=`nvme id-ctrl $testpath | awk '$1=="mn" {print $3, $4, $5, $6, $7, $8}' | xargs | tr " " - | tr "_" - | xargs`
-fw_rev=`nvme id-ctrl $testpath | awk '$1=="fr" {print $3}'`
-cap_Bytes=`nvme id-ctrl $testpath | awk '$1=="tnvmcap" {print $3}'`
+serial_num=`nvme id-ctrl ${testpath} | awk '$1=="sn" {print $3}'`
+model_num=`nvme id-ctrl ${testpath} | awk '$1=="mn" {print $3, $4, $5, $6, $7, $8}' | xargs | tr " " - | tr "_" - | xargs`
+fw_rev=`nvme id-ctrl ${testpath} | awk '$1=="fr" {print $3}'`
+cap_Bytes=`nvme id-ctrl ${testpath} | awk '$1=="tnvmcap" {print $3}'`
 
-#TB_multiplier=1000000000000
 echo "Drive Name: ${drive_name}"
 echo "Server: ${server_model}"
 echo "CPU: ${cpu_model}"
@@ -22,13 +21,6 @@ echo "Serial Num: ${serial_num}"
 echo "Model Num: ${model_num}"
 echo "FW_REV: ${fw_rev}"
 echo "Cap Bytes: ${cap_Bytes}"
-
-
-#cap_TB=$(($cap_Bytes / $TB_multiplier))
-#cap_TB=$((cap_TB+1))
-
-num_loops=2
-#iosize=$(($cap_TB * $num_loops * 1000))
 
 date=$(date '+%m-%d-%Y')
 timestamp=$(date +'%T')
