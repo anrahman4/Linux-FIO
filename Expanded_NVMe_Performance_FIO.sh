@@ -5,6 +5,11 @@ NVMEDRIVE=$1
 echo "Benchmark Drive: ${NVMEDRIVE}"
 drive_name=$2
 
+if [[ ${drive_name} =~ "_" ]]; then
+   echo "The chosen drive alias: ${drive_name} contains underscores. Please remove any underscores '_' from your drive_alias name"
+   exit
+fi
+
 testpath="/dev/${NVMEDRIVE}"
 
 server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " - | xargs`
