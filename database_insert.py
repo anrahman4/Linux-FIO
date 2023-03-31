@@ -414,7 +414,7 @@ def create_fiodict_expanded_jsonplus(file):
             fio_dict["write_clat_pct19_val"] = 0
             fio_dict["write_clat_pct20_val"] = 0
 
-        fio_dict["read_lat_min"] = json_dict["jobs"][0]["read"]["lat_ns"]["min"]
+        fio_dict["read_tlat_min"] = json_dict["jobs"][0]["read"]["lat_ns"]["min"]
         fio_dict["read_lat_max"] = json_dict["jobs"][0]["read"]["lat_ns"]["max"]
         fio_dict["read_lat_mean"] = json_dict["jobs"][0]["read"]["lat_ns"]["mean"]
         fio_dict["read_lat_dev"] = json_dict["jobs"][0]["read"]["lat_ns"]["stddev"]
@@ -436,7 +436,7 @@ def create_fiodict_expanded_jsonplus(file):
         fio_dict["write_clat_max"] = json_dict["jobs"][0]["write"]["clat_ns"]["max"]
         fio_dict["write_clat_mean"] = json_dict["jobs"][0]["write"]["clat_ns"]["mean"]
         fio_dict["write_clat_dev"] = json_dict["jobs"][0]["write"]["clat_ns"]["stddev"]
-        fio_dict["write_lat_min"] = json_dict["jobs"][0]["write"]["lat_ns"]["min"]
+        fio_dict["write_tlat_min"] = json_dict["jobs"][0]["write"]["lat_ns"]["min"]
         fio_dict["write_lat_max"] = json_dict["jobs"][0]["write"]["lat_ns"]["max"]
         fio_dict["write_lat_mean"] = json_dict["jobs"][0]["write"]["lat_ns"]["mean"]
         fio_dict["write_lat_dev"] = json_dict["jobs"][0]["write"]["lat_ns"]["stddev"]
@@ -489,7 +489,7 @@ def create_fiodict_expanded_jsonplus(file):
         fio_dict["disk_read_merges"] = json_dict["disk_util"][0]["read_merges"]
         fio_dict["disk_write_merges"] = json_dict["disk_util"][0]["write_merges"]
         fio_dict["disk_read_ticks"] = json_dict["disk_util"][0]["read_ticks"]
-        fio_dict["disk_write_ticks"] = json_dict["disk_util"][0]["write_ticks"]
+        fio_dict["write_ticks"] = json_dict["disk_util"][0]["write_ticks"]
         fio_dict["disk_queue_time"] = json_dict["disk_util"][0]["in_queue"]
         fio_dict["disk_util"] = json_dict["disk_util"][0]["util"]
 
