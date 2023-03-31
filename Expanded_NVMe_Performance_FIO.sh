@@ -223,13 +223,13 @@ for bs in "${rnd_block_size[@]}"; do
 
     cd ..
 
-    for file in ${bs}/*
-    do
-        cat "$file" >> ${bs}random_output.csv
-    done 
-
-    mv ${bs}random_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
-
+    if [[ "${run_type}" == "terse" ]] then 
+        for file in ${bs}/*
+        do
+            cat "$file" >> ${bs}random_output.csv
+        done
+        mv ${bs}random_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
+    fi
     sudo python3 /home/labuser/database_insert.py fio_expanded ${result_dir}/${run_output_dir}/${rand_output_dir}/${bs}/
 done
 
@@ -275,12 +275,15 @@ for bs in "${seq_block_size[@]}"; do
     done
 
     cd ..
-
-    for file in ${bs}/*
-    do
-        cat "$file" >> ${bs}sequential_output.csv
-    done 
-    mv ${bs}sequential_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
+    
+    if [[ "${run_type}" == "terse" ]] then 
+        for file in ${bs}/*
+        do
+            cat "$file" >> ${bs}random_output.csv
+        done
+        mv ${bs}sequential_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
+    fi
+    
 
     sudo python3 /home/labuser/database_insert.py fio_expanded ${result_dir}/${run_output_dir}/${seq_output_dir}/${bs}/
 done
