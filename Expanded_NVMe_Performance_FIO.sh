@@ -94,15 +94,15 @@ for bs in "${rnd_block_size[@]}"; do
 
     echo "Workload Independent Preconditioning with bs=128k started at"
     date
-    echo "workload:fio --direct=1 --rw=write  --bs=128k --iodepth=32 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs128k_qd32_t1 --group_reporting --filename=/dev/${NVMEDRIVE} --output-format=json+ --loops=2"
-    fio --direct=1 --rw=write  --bs=128k --iodepth=32 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs128k_qd32_t1 --group_reporting --filename=/dev/${NVMEDRIVE} --output-format=json+ --loops=2
+    echo "workload:fio --direct=1 --rw=write  --bs=128k --iodepth=32 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs128k_qd32_t1 --group_reporting --filename=/dev/${NVMEDRIVE} --output-format=terse --loops=2"
+    fio --direct=1 --rw=write  --bs=128k --iodepth=32 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs128k_qd32_t1 --group_reporting --filename=/dev/${NVMEDRIVE} --output-format=terse --loops=2
     echo "Workload Independent Preconditioning completed at"
     date
 
     echo "Workload Dependent Preconditioning with bs=${bs} started at"
     date
-    echo "workload:fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=json+ --loops=3"
-    fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=json+ --loops=3
+    echo "workload:fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3"
+    fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3
     echo "Workload Dependent Preconditioning completed at"
     date
 
@@ -247,8 +247,8 @@ for bs in "${seq_block_size[@]}"; do
 
     echo "Workload Independent Preconditioning with bs=128k started at"
     date
-    echo "workload:fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=json+ --loops=3"
-    fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=json+ --loops=3
+    echo "workload:fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3"
+    fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3
     echo "Workload Independent Preconditioning done at"
     date
 
