@@ -229,7 +229,7 @@ for bs in "${rnd_block_size[@]}"; do
         done
         mv ${bs}random_output.csv /home/labuser/${result_dir}/${run_output_dir}/${outputcsv_dir}/
     fi
-    sudo python3 /home/labuser/database_insert.py fio_expanded ${result_dir}/${run_output_dir}/${rand_output_dir}/${bs}/
+    sudo python3 /home/labuser/database_insert.py fio_expanded ${run_type} ${result_dir}/${run_output_dir}/${rand_output_dir}/${bs}/
 done
 
 
@@ -284,7 +284,7 @@ for bs in "${seq_block_size[@]}"; do
     fi
 
 
-    sudo python3 /home/labuser/database_insert.py fio_expanded ${result_dir}/${run_output_dir}/${seq_output_dir}/${bs}/
+    sudo python3 /home/labuser/database_insert.py fio_expanded ${run_type} ${result_dir}/${run_output_dir}/${seq_output_dir}/${bs}/
 done
 
 cd ..
