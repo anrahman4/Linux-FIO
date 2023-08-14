@@ -11,6 +11,19 @@ echo "Benchmark Drive: $NVMEDRIVE"
 testpath=/dev/$NVMEDRIVE
 echo $testpath
 
+#ioengine
+ioeng="libaio"
+#iodepths
+seq_rd_qd=32
+seq_wr_qd=32
+rnd_rd_qd=256
+rnd_wr_qd=32
+mix_rnd_rd_wr_qd=32
+#run type
+run_type="normal"
+#percentile_list
+perc_list="50:99:99.9:99.99:99.999:99.9999:99.99999:99.999999:100"
+
 server_model=`sudo dmidecode -t1 | grep 'Product Name:' | xargs | cut -d ':' -f 2 | xargs | tr " " - | xargs`
 cpu_model=`sudo cat /proc/cpuinfo | grep 'model name' | uniq | cut -d ':' -f 2 | xargs | tr " " - | tr "@" a | tr "(" - | tr ")" - | xargs`
 serial_num=`nvme id-ctrl $testpath | awk '$1=="sn" {print $3}'`
@@ -51,31 +64,16 @@ cd ${telemetry_dir}
 #echo "Getting telemetry log prior to running workload completed at"
 #date
 
+cd ..
+
 echo "Formatting drive started at"
 date
 nvme format /dev/$NVMEDRIVE --ses=1 --force
 echo "Formatting completed at"
 date
 
-#ioengine
-ioeng="libaio"
-
-cd ..
-
 mkdir ${run_output_dir}
 cd ${run_output_dir}
-
-#iodepths
-seq_rd_qd=32
-seq_wr_qd=32
-rnd_rd_qd=256
-rnd_wr_qd=32
-mix_rnd_rd_wr_qd=32
-
-run_type="normal"
-
-#percentile_list
-perc_list="50:99:99.9:99.99:99.999:99.9999:99.99999:99.999999:100"
 
 echo "Sequential preconditioning for bs=128K started at"
 date
@@ -164,8 +162,5 @@ cd ${telemetry_dir}
 
 #echo "Getting telemetry log after running workload completed at"
 #date
-
-cd ..
-cd ..
 
 echo "Results are in $result_dir"
