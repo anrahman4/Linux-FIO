@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: ./NVMe_FourCorners_FIO.sh <dev_device>
+# Usage: sudo ./NVMe_FourCorners_FIO.sh <dev_device>
 # Example: sudo ./NVMe_FourCorners_FIO.sh nvme1n1
 
 #read -p "Which drive should benchmark use? Existing data will be lost! [default 'nvme0n1']: " NVMEDRIVE
