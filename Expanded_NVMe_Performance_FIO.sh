@@ -67,7 +67,7 @@ mkdir ${seq_output_dir}
 ioeng="libaio"
 
 #run type
-run_type="json+"
+run_type="terse"
 
 #bs
 rnd_block_size=(4k 8k 16k 32k 64k 128k 512k 1024k)
@@ -78,7 +78,7 @@ rnd_qd=(1 2 4 8 16 32 64)
 seq_qd=(1 2 4 8 16 32 64)
 
 #percentile_list
-perc_list="99:99.9:99.99:99.999:99.9999:100"
+perc_list="50:99:99.9:99.99:99.999:99.9999:99.99999:99.999999:100"
 
 #read write percentages
 rd_wr_perc=(0 30 50 70 100)
