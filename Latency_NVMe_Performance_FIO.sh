@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: ./latency-test.sh <dev_device> <drive_alias> > output.txt 2>&1 &
+# Usage: sudo nohup ./latency-test.sh <dev_device> <drive_alias> > output.txt 2>&1 &
 
 NVMEDRIVE=$1
 echo "Benchmark Drive: ${NVMEDRIVE}"
