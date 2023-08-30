@@ -55,7 +55,7 @@ mkdir ${rand_output_dir}
 ioeng="libaio"
 
 #run type
-run_type="terse"
+run_type="json+"
 
 #bs
 rnd_block_size=(4k)
