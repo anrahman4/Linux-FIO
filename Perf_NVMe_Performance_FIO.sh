@@ -67,7 +67,7 @@ mkdir ${seq_output_dir}
 ioeng="libaio"
 
 #run type
-run_type="terse"
+run_type="json+"
 
 #bs
 rnd_block_size=(4k 8k 16k 32k 64k 128k 512k 1024k)
