@@ -83,6 +83,12 @@ perc_list="50:99:99.9:99.99:99.999:99.9999:99.99999:99.999999:100"
 #read write percentages
 rd_wr_perc=(0 30 50 70 100)
 
+#numa cores to use, check lspci for drive numa, and lscpu for cores to use and change the following
+taskset_1c="16"
+taskset_2c="16-17"
+taskset_4c="16-19"
+taskset_8c="16-23"
+
 cd ${rand_output_dir}
 
 #####################################
@@ -95,14 +101,14 @@ for bs in "${rnd_block_size[@]}"; do
     echo "Workload Independent Preconditioning with bs=128k started at"
     date
     echo "workload:fio --direct=1 --rw=write  --bs=128k --iodepth=32 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs128k_qd32_t1 --group_reporting --filename=/dev/${NVMEDRIVE} --output-format=terse --loops=2"
-    fio --direct=1 --rw=write  --bs=128k --iodepth=32 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs128k_qd32_t1 --group_reporting --filename=/dev/${NVMEDRIVE} --output-format=terse --loops=2
+    taskset -c ${taskset_1c} fio --direct=1 --rw=write  --bs=128k --iodepth=32 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs128k_qd32_t1 --group_reporting --filename=/dev/${NVMEDRIVE} --output-format=terse --loops=2
     echo "Workload Independent Preconditioning completed at"
     date
 
     echo "Workload Dependent Preconditioning with bs=${bs} started at"
     date
     echo "workload:fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3"
-    fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3
+    taskset -c ${taskset_1c} fio --direct=1 --rw=randwrite  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Ran_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3
     echo "Workload Dependent Preconditioning completed at"
     date
 
@@ -119,49 +125,49 @@ for bs in "${rnd_block_size[@]}"; do
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
+                    taskset -c ${taskset_1c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
                     date
                 elif [ ${qd} -eq 2 ]; then
                     t=1
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
+                    taskset -c ${taskset_1c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
                     date
 
                     t=2
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
+                    taskset -c ${taskset_2c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
                     date
                 elif [ ${qd} -eq 4 ]; then
                     t=2
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
+                    taskset -c ${taskset_2c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
                     date
 
                     t=4
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
+                    taskset -c ${taskset_4c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
                     date
 
                     t=8
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
+                    taskset -c ${taskset_8c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
                     date
                 else
                     t=8
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
+                    taskset -c ${taskset_8c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.json
                     date
                 fi
 
@@ -171,49 +177,49 @@ for bs in "${rnd_block_size[@]}"; do
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
+                    taskset -c ${taskset_1c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
                     date
                 elif [ ${qd} -eq 2 ]; then
                     t=1
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
+                    taskset -c ${taskset_1c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
                     date
 
                     t=2
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
+                    taskset -c ${taskset_2c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
                     date
                 elif [ ${qd} -eq 4 ]; then
                     t=2
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
+                    taskset -c ${taskset_2c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
                     date
 
                     t=4
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
+                    taskset -c ${taskset_4c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
                     date
 
                     t=8
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
+                    taskset -c ${taskset_8c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
                     date
                 else
                     t=8
                     echo "Random Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t${t} qd${qd}"
                     date
                     echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv"
-                    fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
+                    taskset -c ${taskset_8c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=randrw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=${t} --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=randmixedread${rd_perc}write${wr_perc}_${ioeng}_t${t}_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-randmixedread${rd_perc}write${wr_perc}-bs${bs}-threads${t}-depth${qd}.csv
                     date
                 fi
             fi
@@ -248,7 +254,7 @@ for bs in "${seq_block_size[@]}"; do
     echo "Workload Independent Preconditioning with bs=128k started at"
     date
     echo "workload:fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3"
-    fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3
+    taskset -c ${taskset_1c} fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3
     echo "Workload Independent Preconditioning done at"
     date
 
@@ -261,13 +267,13 @@ for bs in "${seq_block_size[@]}"; do
                 echo "Sequential Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t1 qd${qd}"
                 date
                 echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-seqmixedread${rd_perc}write${wr_perc}_-bs${bs}-threads1-depth${qd}.json"
-                fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}_seqmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}.json
+                taskset -c ${taskset_1c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}_seqmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}.json
                 date
             else
                 echo "Sequential Mixed ${rd_perc}% Read ${wr_perc}% Write bs=${bs} t1 qd${qd}"
                 date
                 echo "fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}-seqmixedread${rd_perc}write${wr_perc}_-bs${bs}-threads1-depth${qd}.csv"
-                fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}_seqmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}.csv
+                taskset -c ${taskset_1c} fio --time_based --runtime=300 --output-format=${run_type} --direct=1 --buffered=0 --rw=rw --rwmixread=${rd_perc} --rwmixwrite=${wr_perc} --bs=${bs} --iodepth=${qd} --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --group_reporting --percentile_list=${perc_list} --name=seqmixedread${rd_perc}write${wr_perc}_${ioeng}_t1_qd${qd}_bs${bs} --filename=/dev/${NVMEDRIVE} --output=${result_dir}_seqmixedread${rd_perc}write${wr_perc}-bs${bs}-threads1-depth${qd}.csv
                 date
             fi
         done
