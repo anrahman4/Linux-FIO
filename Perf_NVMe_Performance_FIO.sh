@@ -251,11 +251,11 @@ for bs in "${seq_block_size[@]}"; do
     mkdir ${bs}
     cd ${bs}
 
-    echo "Workload Independent Preconditioning with bs=128k started at"
+    echo "Workload Dependent Preconditioning with bs=${bs} started at"
     date
     echo "workload:fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3"
     taskset -c ${taskset_1c} fio --direct=1 --rw=write  --bs=${bs} --iodepth=256 --ioengine=${ioeng} --numjobs=1 --norandommap=1 --randrepeat=0 --name=Seq_precondition_bs${bs}_qd256_t1 --group_reporting --filename=/dev/${NVMEDRIVE}  --output-format=terse --loops=3
-    echo "Workload Independent Preconditioning done at"
+    echo "Workload Dependent Preconditioning done at"
     date
 
     for perc in "${rd_wr_perc[@]}"; do
